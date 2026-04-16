@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#app {
+    @apply h-full scroll-smooth;
+}
+
+html {
+    @apply bg-[linear-gradient(180deg,#eef3fb_0%,#f4f6f9_42%,#f3f4f6_100%)];
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-600;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+    @apply h-full;
+}
