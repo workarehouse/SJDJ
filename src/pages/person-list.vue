@@ -1,102 +1,124 @@
 <template>
-    <section class="min-h-screen bg-[linear-gradient(180deg,#e9eef5_0%,#f2f5f9_45%,#f5f7fb_100%)] pb-6">
-        <div class="sticky top-0 z-20 border-b border-slate-300/80 bg-slate-100/95 backdrop-blur-sm">
-            <div class="mx-auto flex w-full max-w-md items-center gap-2 px-3 py-3">
+    <section class="min-h-screen pb-10" style="background: #f0f4f8">
+        <!-- Header -->
+        <div class="sticky top-0 z-20 bg-white shadow-[0_1px_0_0_#e2e8f0]">
+            <div class="mx-auto flex w-full max-w-md items-center gap-3 px-4 py-3">
                 <RouterLink :to="backToHome"
-                    class="flex h-8 w-8 items-center justify-center rounded-md border border-slate-300 text-slate-700 transition-colors hover:bg-slate-200">
-                    <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12.5 16.5L5 9L12.5 1.5" stroke="currentColor" stroke-width="1.5"
+                    class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 transition-colors hover:bg-slate-50">
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none">
+                        <path d="M12.5 16.5L5 9L12.5 1.5" stroke="currentColor" stroke-width="1.75"
                             stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </RouterLink>
                 <div class="min-w-0 flex-1">
-                    <h1 class="truncate text-sm font-semibold tracking-tight text-slate-900">{{ personName }} · 事项清单
-                    </h1>
-                    <p class="text-xs text-slate-600">共 {{ recordCount }} 条记录</p>
+                    <h1 class="truncate text-[15px] font-semibold text-slate-900">{{ personName }}</h1>
+                    <p class="text-[11px] text-slate-400">事项清单 · 共 {{ recordCount }} 条</p>
+                </div>
+                <div
+                    class="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+                    {{ personName.charAt(0) }}
                 </div>
             </div>
-        </div>
 
-        <div class="mx-auto mt-2 w-full max-w-md px-3">
-            <div
-                class="rounded-md border border-slate-300/90 bg-white/90 p-3 shadow-[0_10px_24px_-18px_rgba(15,23,42,0.55)]">
-                <div class="flex items-center justify-between text-xs text-slate-600">
-                    <p class="font-medium text-slate-800">分类</p>
-                    <div class="flex items-center gap-2">
-                        <button type="button" @click="showDatePicker = true"
-                            class="rounded-md border px-2 py-1 text-[11px] font-semibold transition-colors" :class="hasDateFilter
-                                ? 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                                : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'">
-                            日期：{{ dateRange }}
-                        </button>
-                        <button v-if="hasDateFilter" type="button" @click="clearDateFilter"
-                            class="rounded-md border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-600 transition-colors hover:bg-slate-50">
-                            清空
-                        </button>
-                    </div>
-                </div>
-                <div class="mt-2 flex items-center gap-2 overflow-x-auto pb-1">
-                    <span
-                        class="inline-flex rounded-full border border-slate-300 bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-700">
-                        全部
-                    </span>
-                    <span
-                        class="inline-flex rounded-full border border-blue-200 bg-blue-50 px-2.5 py-1 text-[11px] font-semibold text-blue-700">
+            <!-- Tabs + filter row -->
+            <div class="flex items-center justify-between border-t border-slate-100 px-4 py-2">
+                <div class="flex items-center gap-1">
+                    <button
+                        class="rounded-md px-3 py-1 text-xs font-semibold transition-colors bg-slate-900 text-white">
+                        全部 {{ recordCount }}
+                    </button>
+                    <button
+                        class="rounded-md px-3 py-1 text-xs font-semibold transition-colors text-slate-500 hover:bg-slate-100">
                         督办 {{ superviseCount }}
-                    </span>
-                    <span
-                        class="inline-flex rounded-full border border-slate-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-700">
+                    </button>
+                    <button
+                        class="rounded-md px-3 py-1 text-xs font-semibold transition-colors text-slate-500 hover:bg-slate-100">
                         记事 {{ noteCount }}
-                    </span>
+                    </button>
                 </div>
-            </div>
-
-            <div class="mt-2 space-y-2">
-                <article v-for="item in filteredPersonRecords" :key="item.id"
-                    class="relative overflow-hidden rounded-md border border-slate-300 bg-white shadow-[0_10px_22px_-18px_rgba(15,23,42,0.45)]">
-                    <div class="absolute left-0 top-0 h-full w-1" :class="typeStripeClass(item.type)"></div>
-                    <div class="px-4 py-3">
-                        <div class="flex items-center gap-2">
-                            <div class="inline-flex items-center gap-2">
-                                <span class="rounded-md px-2 py-1 text-[11px] font-semibold"
-                                    :class="typeBadgeClass(item.type)">
-                                    {{ item.type }}
-                                </span>
-                                <span v-if="item.type === '督办'" class="rounded-md px-2 py-1 text-[11px] font-semibold"
-                                    :class="statusBadgeClass(item.status)">
-                                    {{ item.status }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="mt-2 grid grid-cols-[4.5rem_1fr] gap-x-2 gap-y-1.5 text-sm leading-5">
-                            <template v-if="item.type === '督办'">
-                                <span class="text-slate-500">完成事件</span>
-                                <p class="font-medium text-slate-900">{{ item.content }}</p>
-
-                                <span class="text-slate-500">完成时间</span>
-                                <p class="font-medium text-slate-800">{{ item.finishedAt }}</p>
-                            </template>
-
-                            <template v-else>
-                                <span class="text-slate-500">事件内容</span>
-                                <p class="font-medium text-slate-900">{{ item.content }}</p>
-
-                                <span class="text-slate-500">记录时间</span>
-                                <p class="font-medium text-slate-800">{{ item.recordedAt }}</p>
-                            </template>
-                        </div>
-                    </div>
-                </article>
-
-                <div v-if="filteredPersonRecords.length === 0"
-                    class="rounded-md border border-dashed border-slate-300 bg-white px-4 py-8 text-center text-sm text-slate-500">
-                    当前日期范围内暂无记录
+                <div class="flex items-center gap-1.5">
+                    <button type="button" @click="showDatePicker = true"
+                        class="flex items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors"
+                        :class="hasDateFilter ? 'border-blue-300 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
+                        <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        {{ hasDateFilter ? dateRange : '日期筛选' }}
+                    </button>
+                    <button v-if="hasDateFilter" type="button" @click="clearDateFilter"
+                        class="flex h-6 w-6 items-center justify-center rounded-md border border-slate-200 bg-white text-slate-400 hover:text-slate-600">
+                        <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
 
-        <van-calendar v-model:show="showDatePicker" type="range" :show-confirm="false" color="#16a34a"
+        <!-- Records -->
+        <div class="mx-auto w-full max-w-md px-4 pt-4 space-y-3">
+            <article v-for="item in filteredPersonRecords" :key="item.id"
+                class="overflow-hidden rounded-xl bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.08)]">
+
+                <!-- Card Body -->
+                <div class="px-4 pt-3 pb-3.5">
+                    <!-- 类型行 -->
+                    <div class="mb-2.5 flex items-center gap-2">
+                        <span class="text-[11px] font-semibold"
+                            :class="item.type === '督办' ? 'text-blue-600' : 'text-slate-400'">
+                            {{ item.type }}
+                        </span>
+                        <span v-if="item.type === '督办'" class="text-[11px]"
+                            :class="item.status === '进行中' ? 'text-amber-500' : 'text-emerald-500'">
+                            {{ item.status }}
+                        </span>
+                    </div>
+                    <!-- 事件内容 -->
+                    <p class="text-sm leading-relaxed text-slate-800">{{ item.content }}</p>
+
+                    <!-- 日期信息 -->
+                    <div class="mt-3 border-t border-slate-100 pt-2.5">
+                        <template v-if="item.type === '督办'">
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                                <div>
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">下达日期</p>
+                                    <p class="mt-0.5 text-xs font-semibold text-slate-700">{{ item.assignedAt }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">完成日期</p>
+                                    <p class="mt-0.5 text-xs font-semibold text-slate-700">{{ item.finishedAt }}</p>
+                                </div>
+                            </div>
+                        </template>
+                        <template v-else>
+                            <div>
+                                <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">记录时间</p>
+                                <p class="mt-0.5 text-xs font-semibold text-slate-700">{{ item.recordedAt }}</p>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Empty state -->
+            <div v-if="filteredPersonRecords.length === 0"
+                class="flex flex-col items-center justify-center rounded-xl bg-white px-4 py-16 text-center shadow-[0_1px_3px_0_rgba(0,0,0,0.06)]">
+                <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-300">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                </div>
+                <p class="text-sm font-medium text-slate-600">暂无事项记录</p>
+                <p class="mt-1 text-xs text-slate-400">当前筛选范围内没有相关数据</p>
+            </div>
+        </div>
+
+        <van-calendar v-model:show="showDatePicker" type="range" :show-confirm="false" color="#2563eb"
             @confirm="onDateConfirm" @cancel="showDatePicker = false" />
     </section>
 </template>

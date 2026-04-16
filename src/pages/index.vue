@@ -1,9 +1,10 @@
 <template>
-    <section class="min-h-[calc(100vh-4rem)] bg-[linear-gradient(180deg,#eef3fb_0%,#f4f6f9_42%,#f3f4f6_100%)] pb-28">
-        <div class="mx-auto w-full max-w-md">
-            <div
-                class="overflow-hidden border border-slate-200/90 bg-white shadow-[0_10px_30px_-18px_rgba(30,64,175,0.32)]">
-                <div class="px-2 py-2">
+    <section class="min-h-[calc(100vh-4rem)] bg-slate-50 pb-28">
+        <!-- Sticky Header + Tabs -->
+        <div class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm">
+            <div class="mx-auto w-full max-w-md">
+                <!-- Tab Switcher -->
+                <div class="px-4 py-3">
                     <div
                         class="relative grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-center text-sm font-semibold">
                         <span
@@ -25,100 +26,110 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <div class="mx-auto w-full max-w-md px-4 pt-4">
             <Transition :css="!isRestoringTab" mode="out-in" enter-active-class="transition-all duration-220 ease-out"
                 leave-active-class="transition-all duration-160 ease-in"
                 :enter-from-class="tabDirection === 'right' ? 'translate-x-6 opacity-0' : '-translate-x-6 opacity-0'"
                 enter-to-class="translate-x-0 opacity-100" leave-from-class="translate-x-0 opacity-100"
                 :leave-to-class="tabDirection === 'right' ? '-translate-x-6 opacity-0' : 'translate-x-6 opacity-0'">
-                <form id="record-form" v-if="activeTab === 'record'" key="record" class="mt-0"
+
+                <!-- Record Form -->
+                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-3"
                     @submit.prevent="onSubmit">
-                    <div class="space-y-0">
-                        <div class="overflow-hidden border border-slate-200 bg-white shadow-sm">
-                            <label class="flex min-h-12 items-center gap-3 px-4 text-sm">
-                                <span class="w-20 shrink-0 font-medium text-slate-700">事件人员<span
-                                        class="text-rose-500">*</span></span>
-                                <RouterLink to="/contacts"
-                                    class="h-8 min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 text-right text-slate-800 transition-colors hover:text-blue-700 focus-visible:border-blue-200 focus-visible:bg-blue-50/40 focus-visible:outline-none">
-                                    <span class="inline-flex items-center justify-end gap-1">
-                                        <span :key="contactDisplayText"
-                                            :class="contactDisplayText ? 'text-slate-800' : 'text-slate-400'">{{
-                                                contactDisplayText || '请选择' }}</span>
-                                        <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </span>
-                                </RouterLink>
-                            </label>
 
-                            <div class="border-t border-slate-100 px-4 py-3 text-sm">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-20 shrink-0 font-medium text-slate-700">事件分类<span
-                                            class="text-rose-500">*</span></span>
-                                    <div class="flex flex-1 items-center justify-end gap-2">
-                                        <button type="button"
-                                            class="rounded-full border px-3 py-1 text-xs font-medium transition-colors"
-                                            :class="form.eventType === '督办' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                            @click="form.eventType = '督办'">
-                                            督办
-                                        </button>
-                                        <button type="button"
-                                            class="rounded-full border px-3 py-1 text-xs font-medium transition-colors"
-                                            :class="form.eventType === '记事' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                            @click="form.eventType = '记事'">
-                                            记事
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Card 1: 事件人员 + 事件分类 -->
+                    <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
+                        <!-- 事件人员 -->
+                        <RouterLink to="/contacts"
+                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-slate-50 active:bg-slate-100">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事件人员<span
+                                    class="ml-0.5 text-rose-500">*</span></span>
+                            <span class="ml-auto flex items-center gap-1 text-sm">
+                                <span :key="contactDisplayText"
+                                    :class="contactDisplayText ? 'text-slate-800' : 'text-slate-400'">
+                                    {{ contactDisplayText || '请选择' }}
+                                </span>
+                                <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="none">
+                                    <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </RouterLink>
 
-                            <label class="block border-t border-slate-100 px-4 py-3 text-sm">
-                                <span class="mb-1.5 block font-medium text-slate-700">事件内容<span
-                                        class="text-rose-500">*</span></span>
-                                <textarea v-model="form.content" rows="4" placeholder="请填写"
-                                    class="w-full resize-none rounded-md border border-transparent bg-slate-50 px-2.5 py-2 text-sm leading-6 text-slate-800 placeholder:text-slate-400 transition-colors focus-visible:border-blue-200 focus-visible:bg-white focus-visible:outline-none"></textarea>
-                            </label>
-                        </div>
+                        <div class="mx-4 h-px bg-slate-100"></div>
 
-                        <div class="overflow-hidden  bg-white shadow-sm">
-                            <label class="flex min-h-12 items-center gap-3 px-4 text-sm">
-                                <span class="w-20 shrink-0 font-medium text-slate-700">完成时间<span
-                                        class="text-rose-500">*</span></span>
-                                <button type="button" @click="showCalendar = true"
-                                    class="h-8 min-w-0 flex-1 rounded-md border border-transparent bg-transparent px-2 text-right text-slate-800 transition-colors hover:text-blue-700 focus-visible:border-blue-200 focus-visible:bg-blue-50/40 focus-visible:outline-none">
-                                    <span class="inline-flex items-center justify-end gap-1">
-                                        <span :class="form.finishedAt ? 'text-slate-800' : 'text-slate-400'">{{
-                                            form.finishedAt || '请选择' }}</span>
-                                        <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
-                                                stroke-linecap="round" stroke-linejoin="round" />
-                                        </svg>
-                                    </span>
+                        <!-- 事件分类 -->
+                        <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事件分类<span
+                                    class="ml-0.5 text-rose-500">*</span></span>
+                            <div class="ml-auto flex items-center gap-2">
+                                <button type="button"
+                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                    :class="form.eventType === '督办' ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                                    @click="form.eventType = '督办'">
+                                    督办
                                 </button>
-                            </label>
+                                <button type="button"
+                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                    :class="form.eventType === '记事' ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                                    @click="form.eventType = '记事'">
+                                    记事
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                            <div class="border-t border-slate-100 px-4 py-3 text-sm">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-20 shrink-0 font-medium text-slate-700">事项类别<span
-                                            class="text-rose-500">*</span></span>
-                                    <div class="flex flex-1 items-center justify-end gap-2">
-                                        <button type="button"
-                                            class="rounded-full border px-3 py-1 text-xs font-medium transition-colors"
-                                            :class="form.itemType === '加分项' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                            @click="form.itemType = '加分项'">
-                                            加分项
-                                        </button>
-                                        <button type="button"
-                                            class="rounded-full border px-3 py-1 text-xs font-medium transition-colors"
-                                            :class="form.itemType === '减分项' ? 'border-blue-200 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                            @click="form.itemType = '减分项'">
-                                            减分项
-                                        </button>
-                                    </div>
-                                </div>
+                    <!-- Card 2: 事件内容 -->
+                    <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
+                        <label class="block px-4 pb-3 pt-3.5">
+                            <div class="mb-2">
+                                <span class="text-sm font-medium text-slate-700">事件内容<span
+                                        class="ml-0.5 text-rose-500">*</span></span>
+                            </div>
+                            <textarea v-model="form.content" rows="4" placeholder="请填写事件详情…"
+                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-slate-400 transition-colors focus-visible:border-blue-200 focus-visible:bg-white focus-visible:outline-none"></textarea>
+                        </label>
+                    </div>
+
+                    <!-- Card 3: 完成时间 + 事项类别 -->
+                    <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
+                        <!-- 完成时间 -->
+                        <button type="button" @click="showCalendar = true"
+                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-slate-50 active:bg-slate-100">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">完成时间<span
+                                    class="ml-0.5 text-rose-500">*</span></span>
+                            <span class="ml-auto flex items-center gap-1 text-sm">
+                                <span :class="form.finishedAt ? 'text-slate-800' : 'text-slate-400'">
+                                    {{ form.finishedAt || '请选择' }}
+                                </span>
+                                <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="none">
+                                    <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="mx-4 h-px bg-slate-100"></div>
+
+                        <!-- 事项类别 -->
+                        <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事项类别<span
+                                    class="ml-0.5 text-rose-500">*</span></span>
+                            <div class="ml-auto flex items-center gap-2">
+                                <button type="button"
+                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                    :class="form.itemType === '加分项' ? 'border-emerald-200 bg-emerald-50 text-emerald-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                                    @click="form.itemType = '加分项'">
+                                    加分项
+                                </button>
+                                <button type="button"
+                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                    :class="form.itemType === '减分项' ? 'border-rose-200 bg-rose-50 text-rose-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
+                                    @click="form.itemType = '减分项'">
+                                    减分项
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -127,43 +138,54 @@
                         @confirm="onCalendarConfirm" @cancel="showCalendar = false" />
                 </form>
 
-                <div v-else key="query" class="mt-0 overflow-hidden border border-slate-200 bg-white shadow-sm">
+                <!-- Query Tab -->
+                <div v-else key="query"
+                    class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
                     <SearchBar :contacts="queryPeople" @select="goToPersonList"
                         @search-query-change="queryKeyword = $event" />
 
-                    <div class="divide-y divide-slate-100 border-t border-slate-100">
+                    <div class="divide-y divide-slate-100">
                         <button v-for="person in filteredQueryPeople" :key="person.id" @click="goToPersonList(person)"
-                            class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-blue-50">
+                            class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-blue-50 active:bg-blue-100">
                             <div
-                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white">
+                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white shadow-sm">
                                 {{ person.avatar }}
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-medium text-slate-900">{{ person.name }}</p>
                                 <p class="truncate text-xs text-slate-500">{{ person.position }}</p>
                             </div>
-                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none"
-                                xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <svg class="h-4 w-4 flex-shrink-0 text-slate-400" viewBox="0 0 20 20" fill="none">
                                 <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
                                     stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </button>
                     </div>
 
-                    <div v-if="filteredQueryPeople.length === 0" class="px-4 py-10 text-center">
-                        <p class="text-sm text-slate-500">未找到相关人员</p>
+                    <div v-if="filteredQueryPeople.length === 0"
+                        class="flex flex-col items-center justify-center px-4 py-12 text-center">
+                        <div
+                            class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-300">
+                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+                            </svg>
+                        </div>
+                        <p class="text-sm font-medium text-slate-600">未找到相关人员</p>
+                        <p class="mt-0.5 text-xs text-slate-400">请尝试其他关键词</p>
                     </div>
                 </div>
             </Transition>
+        </div>
 
-            <div v-if="activeTab === 'record'"
-                class="fixed inset-x-0 bottom-0 border-t border-slate-200/90 bg-white/95 backdrop-blur-sm">
-                <div class="mx-auto w-full max-w-md px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-2">
-                    <button type="submit" form="record-form"
-                        class="h-11 w-full rounded-lg bg-blue-600 text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.65)] transition-colors hover:bg-blue-700">
-                        提交
-                    </button>
-                </div>
+        <!-- Submit Button -->
+        <div v-if="activeTab === 'record'"
+            class="fixed inset-x-0 bottom-0 border-t border-slate-200/80 bg-white/95 backdrop-blur-sm">
+            <div class="mx-auto w-full max-w-md px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+                <button type="submit" form="record-form"
+                    class="h-12 w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-sm font-semibold text-white shadow-[0_8px_24px_-6px_rgba(37,99,235,0.55)] transition-all active:scale-[0.98] hover:from-blue-700 hover:to-blue-800">
+                    提交
+                </button>
             </div>
         </div>
     </section>
@@ -188,6 +210,8 @@ const tabDirection = ref('right')
 const showCalendar = ref(false)
 const queryKeyword = ref('')
 const isRestoringTab = ref(false)
+
+const todayStr = computed(() => dayjs().format('YYYY年M月D日'))
 
 const tabOrder = {
     record: 0,
