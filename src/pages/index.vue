@@ -16,12 +16,12 @@
                         <button class="relative z-10 rounded-lg py-2 transition-colors duration-200"
                             :class="activeTab === 'record' ? 'text-[#267EF0]' : 'text-slate-500 hover:text-slate-700'"
                             @click="switchTab('record')">
-                            º«¬º
+                            ËÆ∞ÂΩï
                         </button>
                         <button class="relative z-10 rounded-lg py-2 transition-colors duration-200"
                             :class="activeTab === 'query' ? 'text-[#267EF0]' : 'text-slate-500 hover:text-slate-700'"
                             @click="switchTab('query')">
-                            ≤È—Ø
+                            Êü•ËØ¢
                         </button>
                     </div>
                 </div>
@@ -39,27 +39,26 @@
                 <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-3 mx-3  "
                     @submit.prevent="onSubmit">
 
-                    <!-- Card 1:  ¬º˛»À‘± +  ¬º˛∑÷¿‡ -->
+                    <!-- Card 1: ‰∫ã‰ª∂‰∫∫Âëò + ‰∫ã‰ª∂ÂàÜÁ±ª -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!--  ¬º˛»À‘± -->
+                        <!-- ‰∫ã‰ª∂‰∫∫Âëò -->
                         <RouterLink to="/contacts"
                             class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700"> ¬º˛»À‘±<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">‰∫ã‰ª∂‰∫∫Âëò<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1.5">
-                                <!-- Œ¥—°‘Ò -->
-                                <span v-if="!selectedContactsData.length" class="text-sm text-slate-400">«Î—°‘Ò</span>
-                                <!-- “——°‘Ò£∫Õ∑œÒ∂—µ˛ + √˚≥∆/»À ˝ -->
+                                <!-- Êú™ÈÄâÊã© -->
+                                <span v-if="!selectedContactsData.length" class="text-sm text-slate-400">ËØ∑ÈÄâÊã©</span>
+                                <!-- Â∑≤ÈÄâÊã©ÔºöÂ§¥ÂÉèÂ†ÜÂè† + ÂêçÁß∞/‰∫∫Êï∞ -->
                                 <span v-else class="flex items-center gap-1.5">
                                     <span class="flex -space-x-2">
                                         <div v-for="(contact, i) in selectedContactsData.slice(0, 3)"
                                             :key="contact.acct"
                                             class="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-[9px] font-bold text-white ring-2 ring-white"
                                             :style="{ zIndex: 3 - i }">
-                                            <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                                            <img :src="contact.avatar || defaultAvatar" :alt="contact.usrnam"
                                                 class="h-full w-full object-cover" />
-                                            <span v-else>{{ contact.usrnam?.charAt(0) }}</span>
                                         </div>
                                         <div v-if="selectedContactsData.length > 3"
                                             class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-[9px] font-bold text-slate-500 ring-2 ring-white">
@@ -68,7 +67,7 @@
                                     </span>
                                     <span class="text-xs font-medium text-slate-700">
                                         {{ selectedContactsData.length <= 2 ? contactDisplayText :
-                                            `${selectedContactsData.length} »À` }} </span>
+                                            `${selectedContactsData.length} ‰∫∫` }} </span>
                                     </span>
                                     <svg class="h-3.5 w-3.5 shrink-0 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
                                         <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
@@ -79,50 +78,50 @@
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!--  ¬º˛∑÷¿‡ -->
+                        <!-- ‰∫ã‰ª∂ÂàÜÁ±ª -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700"> ¬º˛∑÷¿‡<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">‰∫ã‰ª∂ÂàÜÁ±ª<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                     :class="form.logsty === '1' ? 'border-transparent bg-[#267EF0] text-white shadow-[0_1px_4px_rgba(38,126,240,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.logsty = '1'">
-                                    ∂Ω∞Ï
+                                    Áù£Âäû
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                     :class="form.logsty === '2' ? 'border-transparent bg-[#267EF0] text-white shadow-[0_1px_4px_rgba(38,126,240,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.logsty = '2'">
-                                    º« ¬
+                                    ËÆ∞‰∫ã
                                 </button>
                             </div>
                         </div>
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!--  ¬º˛ƒ⁄»› -->
+                        <!-- ‰∫ã‰ª∂ÂÜÖÂÆπ -->
                         <label class="block px-4 pb-3 pt-3">
                             <div class="mb-2">
-                                <span class="text-sm font-medium text-slate-700"> ¬º˛ƒ⁄»›<span
+                                <span class="text-sm font-medium text-slate-700">‰∫ã‰ª∂ÂÜÖÂÆπ<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
-                            <textarea v-model="form.eventmsg" rows="4" placeholder="«ÎÃÓ–¥ ¬º˛œÍ«È°≠"
+                            <textarea v-model="form.eventmsg" rows="4" placeholder="ËØ∑Â°´ÂÜô‰∫ã‰ª∂ËØ¶ÊÉÖ‚Ä¶"
                                 class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-colors focus-visible:border-[#267EF0]/40 focus-visible:bg-white focus-visible:outline-none"></textarea>
                         </label>
                     </div>
 
-                    <!-- Card 2: ÕÍ≥… ±º‰ +  ¬œÓ¿‡± -->
+                    <!-- Card 2: ÂÆåÊàêÊó∂Èó¥ + ‰∫ãÈ°πÁ±ªÂà´ -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- ÕÍ≥… ±º‰ -->
+                        <!-- ÂÆåÊàêÊó∂Èó¥ -->
                         <button type="button" @click="showCalendar = true"
                             class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">ÕÍ≥… ±º‰<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">ÂÆåÊàêÊó∂Èó¥<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
                                 <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
-                                    {{ form.findat || '«Î—°‘Ò' }}
+                                    {{ form.findat || 'ËØ∑ÈÄâÊã©' }}
                                 </span>
                                 <svg class="h-3.5 w-3.5 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
                                     <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
@@ -133,22 +132,22 @@
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!--  ¬œÓ¿‡± -->
+                        <!-- ‰∫ãÈ°πÁ±ªÂà´ -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700"> ¬œÓ¿‡±<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">‰∫ãÈ°πÁ±ªÂà´<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                     :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.kpisty = 1">
-                                    º”∑÷œÓ
+                                    Âä†ÂàÜÈ°π
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                     :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.kpisty = -1">
-                                    ºı∑÷œÓ
+                                    ÂáèÂàÜÈ°π
                                 </button>
                             </div>
                         </div>
@@ -163,16 +162,15 @@
                     <SearchBar @select="goToPersonList" />
 
                     <div class="mt-6 px-4">
-                        <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">◊ÓΩ¸»À‘±</p>
+                        <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">ÊúÄËøë‰∫∫Âëò</p>
                         <div
                             class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] divide-y divide-black/[0.05]">
                             <button v-for="person in QueryPeople" :key="person.acct" @click="goToPersonList(person)"
                                 class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-black/[0.06]">
                                 <div
                                     class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-sm font-semibold text-white shadow-sm overflow-hidden">
-                                    <img v-if="person.avatar" :src="person.avatar" :alt="person.usrnam"
+                                    <img :src="person.avatar || defaultAvatar" :alt="person.usrnam"
                                         class="h-full w-full object-cover" />
-                                    <span v-else>{{ person.usrnam?.charAt(0) }}</span>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-sm font-medium text-slate-900">{{ person.usrnam }}</p>
@@ -199,9 +197,9 @@
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
                             <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                         </svg>
-                        Ã·Ωª÷–°≠
+                        Êèê‰∫§‰∏≠‚Ä¶
                     </span>
-                    <span v-else>Ã·Ωª</span>
+                    <span v-else>Êèê‰∫§</span>
                 </button>
             </div>
         </div>
@@ -218,6 +216,7 @@ import { useRoute, useRouter } from 'vue-router'
 import SearchBar from '@/components/SearchBar.vue'
 import http from '@/utils/http'
 import Toast from '@/utils/Toast'
+import defaultAvatar from '@/assets/default-avatar.svg'
 
 const route = useRoute()
 const router = useRouter()
@@ -232,7 +231,7 @@ const showCalendar = ref(false)
 const queryKeyword = ref('')
 const isRestoringTab = ref(false)
 
-const todayStr = computed(() => dayjs().format('YYYYƒÍM‘¬D»’'))
+const todayStr = computed(() => dayjs().format('YYYYÂπ¥MÊúàDÊó•'))
 
 const tabOrder = {
     record: 0,
@@ -284,7 +283,7 @@ const fetchQueryPeople = async () => {
     const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
     const edat = dayjs().format('YYYY-MM-DD')
     const response = await http.post('/findmyusers', { qryflg: 4, bdat, edat })
-    console.log('◊ÓΩ¸»À‘±≤È—ØΩ·π˚£∫', response)
+    console.log('ÊúÄËøë‰∫∫ÂëòÊü•ËØ¢ÁªìÊûúÔºö', response)
     QueryPeople.value = response ?? []
 }
 
@@ -345,7 +344,7 @@ const onSubmit = async () => {
             logsty: form.logsty,
             toUsers,
         })
-        Toast.success('Ã·Ωª≥…π¶')
+        Toast.success('Êèê‰∫§ÊàêÂäü')
         resetForm()
     } finally {
         isSubmitting.value = false
@@ -371,6 +370,6 @@ watch(() => route.query.tab, () => {
 
 <route lang="yaml">
 meta:
-    title:  ¬º˛µ«º«
+    title: ‰∫ã‰ª∂ÁôªËÆ∞
     layout: Default
 </route>

@@ -1,8 +1,8 @@
 <template>
-    <!-- Õ‚≤„ flex ¡–≤ºæ÷£¨∏ﬂ∂»≥≈¬˙∂ØÃ¨ ”ø⁄ -->
+    <!-- Â§ñÂ±Ç flex ÂàóÂ∏ÉÂ±ÄÔºåÈ´òÂ∫¶ÊíëÊª°Âä®ÊÄÅËßÜÂè£ -->
     <section class="flex h-dvh flex-col bg-[#F5F6F7]">
 
-        <!-- ø…πˆ∂Ø«¯”Ú£∫∞¸∫¨ header + “——°‘Ò + ¡–±Ì -->
+        <!-- ÂèØÊªöÂä®Âå∫ÂüüÔºöÂåÖÂê´ header + Â∑≤ÈÄâÊã© + ÂàóË°® -->
         <div class="flex-1 overflow-y-auto">
             <!-- Header -->
             <div class="sticky top-0 z-40 bg-gradient-to-b from-white to-[#F5F6F7] ">
@@ -12,20 +12,20 @@
                 </div>
             </div>
 
-            <!-- “——°‘Ò -->
+            <!-- Â∑≤ÈÄâÊã© -->
             <Transition enter-active-class="animate-in fade-in duration-200"
                 leave-active-class="animate-out fade-out duration-150">
                 <div v-if="selectedContacts.length > 0 && !isSearching" class="border-b border-slate-100 bg-white">
                     <div class="mx-auto w-full max-w-md">
                         <div class="flex items-center justify-between px-4 pt-3 pb-2">
                             <div class="flex items-center gap-1.5">
-                                <span class="text-xs font-semibold text-slate-700">“——°‘Ò</span>
+                                <span class="text-xs font-semibold text-slate-700">Â∑≤ÈÄâÊã©</span>
                                 <span
                                     class="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[#267EF0] px-1 text-[10px] font-semibold text-white">{{
                                         selectedContacts.length }}</span>
                             </div>
                             <button @click="clearSelectedContacts"
-                                class="text-xs font-medium text-slate-400 transition-colors hover:text-[#FF4650]">«Âø’</button>
+                                class="text-xs font-medium text-slate-400 transition-colors hover:text-[#FF4650]">Ê∏ÖÁ©∫</button>
                         </div>
                         <div class="max-h-40 overflow-y-auto flex flex-wrap gap-x-4 gap-y-3 px-4 py-2">
                             <TransitionGroup enter-active-class="transition-all duration-200 ease-out"
@@ -38,9 +38,8 @@
                                     <div class="relative h-11 w-11">
                                         <div
                                             class="h-11 w-11 rounded-full bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] flex items-center justify-center overflow-hidden text-white font-semibold text-sm ring-2 ring-[#267EF0]/30">
-                                            <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                                            <img :src="contact.avatar || defaultAvatar" :alt="contact.usrnam"
                                                 class="h-full w-full object-cover" />
-                                            <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '»À' }}</span>
                                         </div>
                                         <span
                                             class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#267EF0] text-white shadow-sm">
@@ -59,12 +58,12 @@
                 </div>
             </Transition>
 
-            <!-- ¡–±Ì -->
+            <!-- ÂàóË°® -->
             <div class="mx-auto w-full max-w-md">
                 <div v-if="!isLoading && contacts.length > 0" class="px-4 py-2.5 flex items-center gap-2">
-                    <span class="text-xs font-semibold text-slate-600">Œ“µƒœ¬ Ù</span>
+                    <span class="text-xs font-semibold text-slate-600">ÊàëÁöÑ‰∏ãÂ±û</span>
                 </div>
-                <!-- π«º‹∆¡ -->
+                <!-- È™®Êû∂Â±è -->
                 <template v-if="isLoading">
                     <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-4 py-3">
                         <div class="h-5 w-5 rounded bg-slate-100 animate-pulse"></div>
@@ -88,9 +87,8 @@
                         <!-- Avatar -->
                         <div
                             class="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] flex items-center justify-center overflow-hidden text-white font-semibold text-sm">
-                            <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                            <img :src="contact.avatar || defaultAvatar" :alt="contact.usrnam"
                                 class="h-full w-full object-cover" />
-                            <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '»À' }}</span>
                         </div>
                         <!-- Info -->
                         <div class="flex-1 min-w-0">
@@ -100,7 +98,7 @@
                     </button>
                 </TransitionGroup>
 
-                <!-- ø’◊¥Ã¨ -->
+                <!-- Á©∫Áä∂ÊÄÅ -->
                 <div v-if="!isLoading && contacts.length === 0"
                     class="flex flex-col items-center justify-center py-16 text-center">
                     <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
@@ -109,19 +107,19 @@
                                 d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                         </svg>
                     </div>
-                    <p class="text-sm font-medium text-slate-600">‘›Œﬁœ¬ Ù»À‘±</p>
-                    <p class="mt-1 text-xs text-slate-400">ø…Õ®π˝…œ∑ΩÀ—À˜ÃÌº”»À‘±</p>
+                    <p class="text-sm font-medium text-slate-600">ÊöÇÊó†‰∏ãÂ±û‰∫∫Âëò</p>
+                    <p class="mt-1 text-xs text-slate-400">ÂèØÈÄöËøá‰∏äÊñπÊêúÁ¥¢Ê∑ªÂä†‰∫∫Âëò</p>
                 </div>
             </div>
         </div>
 
-        <!-- »∑»œ∞¥≈•£∫∆’Õ®µ◊≤ø‘™Àÿ£¨≤ª‘Ÿ fixed -->
+        <!-- Á°ÆËÆ§ÊåâÈíÆÔºöÊôÆÈÄöÂ∫ïÈÉ®ÂÖÉÁ¥†Ôºå‰∏çÂÜç fixed -->
         <div class="border-t border-slate-100 bg-white">
             <div class="mx-auto w-full max-w-md px-4 pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
                 <button @click="confirmSelection"
                     class="h-11 w-full rounded-lg bg-[#267EF0] text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(38,126,240,0.65)] transition-all duration-150 hover:bg-[#1a6ad4] active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
                     :disabled="selectedContacts.length === 0">
-                    »∑»œ
+                    Á°ÆËÆ§
                 </button>
             </div>
         </div>
@@ -135,6 +133,7 @@ import { useContactSelectionStore } from '@/store/contactSelection'
 import SearchBar from '@/components/SearchBar.vue'
 import http from '@/utils/http'
 import dayjs from 'dayjs'
+import defaultAvatar from '@/assets/default-avatar.svg'
 
 const router = useRouter()
 const contactSelectionStore = useContactSelectionStore()
@@ -224,6 +223,6 @@ onActivated(() => {
 
 <route lang="yaml">
 meta:
-    title: —°‘Ò ¬º˛»À‘±
+    title: ÈÄâÊã©‰∫ã‰ª∂‰∫∫Âëò
     layout: Default
 </route>
