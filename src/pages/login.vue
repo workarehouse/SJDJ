@@ -1,29 +1,23 @@
 <template>
-    <div
-        class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[linear-gradient(150deg,#0f172a_0%,#1e3a8a_55%,#1e40af_100%)]">
-
-        <!-- 背景网格纹理 -->
-        <div
-            class="pointer-events-none absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-60">
-        </div>
+    <div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-white">
 
         <!-- 光晕装饰 -->
         <div
-            class="pointer-events-none absolute left-1/2 top-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/10 blur-3xl">
+            class="pointer-events-none absolute left-1/2 top-1/4 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#267EF0]/6 blur-3xl">
         </div>
-        <div class="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-indigo-600/10 blur-3xl">
+        <div class="pointer-events-none absolute bottom-0 right-0 h-72 w-72 rounded-full bg-[#267EF0]/4 blur-3xl">
         </div>
 
         <!-- 卡片主体 -->
         <div
-            class="relative z-10 flex w-[18rem] flex-col items-center rounded-3xl border border-white/10 bg-white/5 px-8 py-10 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.5)] backdrop-blur-2xl">
+            class="relative z-10 flex w-[18rem] flex-col items-center rounded-3xl border border-slate-100 bg-white px-8 py-10 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.10),0_2px_8px_-2px_rgba(0,0,0,0.06)]">
 
             <!-- 脉冲光圈 + 图标 -->
             <div class="relative mb-7 flex items-center justify-center">
-                <span class="absolute h-20 w-20 animate-ping rounded-full bg-blue-400/20"></span>
-                <span class="absolute h-16 w-16 animate-ping rounded-full bg-blue-300/15 [animation-delay:0.4s]"></span>
+                <span class="absolute h-20 w-20 animate-ping rounded-full bg-[#267EF0]/12"></span>
+                <span class="absolute h-16 w-16 animate-ping rounded-full bg-[#267EF0]/8 [animation-delay:0.4s]"></span>
                 <div
-                    class="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-400 to-blue-600 shadow-[0_8px_24px_-4px_rgba(37,99,235,0.7)]">
+                    class="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] shadow-[0_8px_24px_-4px_rgba(38,126,240,0.35)]">
                     <!-- 剪贴板图标 -->
                     <svg class="h-7 w-7 text-white" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -34,18 +28,19 @@
             </div>
 
             <!-- 标题 -->
-            <h1 class="mb-0.5 text-xl font-bold tracking-tight text-white">事件登记</h1>
-            <p class="mb-7 text-xs text-blue-200/70">正在登陆...</p>
+            <h1 class="mb-0.5 text-xl font-bold tracking-tight text-slate-900">事件登记</h1>
+            <p class="mb-7 text-xs text-slate-400">正在登陆...</p>
 
             <!-- 进度条 -->
-            <div class="w-full overflow-hidden rounded-full bg-white/10">
-                <div class="h-0.5 animate-progress rounded-full bg-gradient-to-r from-blue-300 via-sky-300 to-blue-400">
+            <div class="w-full overflow-hidden rounded-full bg-slate-100">
+                <div
+                    class="h-0.5 animate-progress rounded-full bg-gradient-to-r from-[#267EF0] via-sky-400 to-[#267EF0]">
                 </div>
             </div>
         </div>
 
         <!-- 底部版权 -->
-        <p class="absolute bottom-6 text-[11px] text-white/25">© {{ year }} 事件登记</p>
+        <p class="absolute bottom-6 text-[11px] text-slate-300">© {{ year }} 事件登记</p>
     </div>
 </template>
 

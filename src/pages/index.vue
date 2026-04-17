@@ -1,10 +1,10 @@
 <template>
-    <section class="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-white to-[#F5F6F8] pb-28">
+    <section class="pb-28 min-h-screen">
         <!-- Sticky Header + Tabs -->
-        <div class="sticky top-0 z-30   backdrop-blur-xl">
+        <div class="sticky top-0 z-30 bg-gradient-to-b from-white to-[#F5F6F7] backdrop-blur-xl">
             <div class="mx-auto w-full max-w-md">
                 <!-- Tab Switcher -->
-                <div class="px-4 py-3">
+                <div class="px-3 pt-5 py-3 ">
                     <div
                         class="relative grid grid-cols-2 rounded-xl bg-[#EBEBEB] p-1 text-center text-sm font-semibold">
                         <span
@@ -14,21 +14,21 @@
                                 isRestoringTab ? 'transition-none' : 'transition-transform duration-250 ease-out',
                             ]"></span>
                         <button class="relative z-10 rounded-lg py-2 transition-colors duration-200"
-                            :class="activeTab === 'record' ? 'text-blue-700' : 'text-slate-500 hover:text-slate-700'"
+                            :class="activeTab === 'record' ? 'text-[#267EF0]' : 'text-slate-500 hover:text-slate-700'"
                             @click="switchTab('record')">
-                            ËÆ∞ÂΩï
+                            º«¬º
                         </button>
                         <button class="relative z-10 rounded-lg py-2 transition-colors duration-200"
-                            :class="activeTab === 'query' ? 'text-blue-700' : 'text-slate-500 hover:text-slate-700'"
+                            :class="activeTab === 'query' ? 'text-[#267EF0]' : 'text-slate-500 hover:text-slate-700'"
                             @click="switchTab('query')">
-                            Êü•ËØ¢
+                            ≤È—Ø
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="mx-auto w-full max-w-md  pt-4">
+        <div class="mx-auto w-full max-w-md   ">
             <Transition :css="!isRestoringTab" mode="out-in" enter-active-class="transition-all duration-220 ease-out"
                 leave-active-class="transition-all duration-160 ease-in"
                 :enter-from-class="tabDirection === 'right' ? 'translate-x-6 opacity-0' : '-translate-x-6 opacity-0'"
@@ -36,26 +36,26 @@
                 :leave-to-class="tabDirection === 'right' ? '-translate-x-6 opacity-0' : 'translate-x-6 opacity-0'">
 
                 <!-- Record Form -->
-                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-3"
+                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-3 mx-3  "
                     @submit.prevent="onSubmit">
 
-                    <!-- Card 1: ‰∫ã‰ª∂‰∫∫Âëò + ‰∫ã‰ª∂ÂàÜÁ±ª -->
+                    <!-- Card 1:  ¬º˛»À‘± +  ¬º˛∑÷¿‡ -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- ‰∫ã‰ª∂‰∫∫Âëò -->
+                        <!--  ¬º˛»À‘± -->
                         <RouterLink to="/contacts"
                             class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">‰∫ã‰ª∂‰∫∫Âëò<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700"> ¬º˛»À‘±<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1.5">
-                                <!-- Êú™ÈÄâÊã© -->
-                                <span v-if="!selectedContactsData.length" class="text-sm text-slate-400">ËØ∑ÈÄâÊã©</span>
-                                <!-- Â∑≤ÈÄâÊã©ÔºöÂ§¥ÂÉèÂ†ÜÂè† + ÂêçÁß∞/‰∫∫Êï∞ -->
+                                <!-- Œ¥—°‘Ò -->
+                                <span v-if="!selectedContactsData.length" class="text-sm text-slate-400">«Î—°‘Ò</span>
+                                <!-- “——°‘Ò£∫Õ∑œÒ∂—µ˛ + √˚≥∆/»À ˝ -->
                                 <span v-else class="flex items-center gap-1.5">
                                     <span class="flex -space-x-2">
                                         <div v-for="(contact, i) in selectedContactsData.slice(0, 3)"
                                             :key="contact.acct"
-                                            class="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-[9px] font-bold text-white ring-2 ring-white"
+                                            class="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-[9px] font-bold text-white ring-2 ring-white"
                                             :style="{ zIndex: 3 - i }">
                                             <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
                                                 class="h-full w-full object-cover" />
@@ -68,7 +68,7 @@
                                     </span>
                                     <span class="text-xs font-medium text-slate-700">
                                         {{ selectedContactsData.length <= 2 ? contactDisplayText :
-                                            `${selectedContactsData.length} ‰∫∫` }} </span>
+                                            `${selectedContactsData.length} »À` }} </span>
                                     </span>
                                     <svg class="h-3.5 w-3.5 shrink-0 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
                                         <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
@@ -79,50 +79,50 @@
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!-- ‰∫ã‰ª∂ÂàÜÁ±ª -->
+                        <!--  ¬º˛∑÷¿‡ -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">‰∫ã‰ª∂ÂàÜÁ±ª<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700"> ¬º˛∑÷¿‡<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.logsty === '1' ? 'border-transparent bg-[#007AFF] text-white shadow-[0_1px_4px_rgba(0,122,255,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    :class="form.logsty === '1' ? 'border-transparent bg-[#267EF0] text-white shadow-[0_1px_4px_rgba(38,126,240,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.logsty = '1'">
-                                    Áù£Âäû
+                                    ∂Ω∞Ï
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.logsty === '2' ? 'border-transparent bg-[#007AFF] text-white shadow-[0_1px_4px_rgba(0,122,255,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    :class="form.logsty === '2' ? 'border-transparent bg-[#267EF0] text-white shadow-[0_1px_4px_rgba(38,126,240,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.logsty = '2'">
-                                    ËÆ∞‰∫ã
+                                    º« ¬
                                 </button>
                             </div>
                         </div>
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!-- ‰∫ã‰ª∂ÂÜÖÂÆπ -->
+                        <!--  ¬º˛ƒ⁄»› -->
                         <label class="block px-4 pb-3 pt-3">
                             <div class="mb-2">
-                                <span class="text-sm font-medium text-slate-700">‰∫ã‰ª∂ÂÜÖÂÆπ<span
+                                <span class="text-sm font-medium text-slate-700"> ¬º˛ƒ⁄»›<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
-                            <textarea v-model="form.eventmsg" rows="4" placeholder="ËØ∑Â°´ÂÜô‰∫ã‰ª∂ËØ¶ÊÉÖ‚Ä¶"
-                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-colors focus-visible:border-[#007AFF]/40 focus-visible:bg-white focus-visible:outline-none"></textarea>
+                            <textarea v-model="form.eventmsg" rows="4" placeholder="«ÎÃÓ–¥ ¬º˛œÍ«È°≠"
+                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-colors focus-visible:border-[#267EF0]/40 focus-visible:bg-white focus-visible:outline-none"></textarea>
                         </label>
                     </div>
 
-                    <!-- Card 2: ÂÆåÊàêÊó∂Èó¥ + ‰∫ãÈ°πÁ±ªÂà´ -->
+                    <!-- Card 2: ÕÍ≥… ±º‰ +  ¬œÓ¿‡± -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- ÂÆåÊàêÊó∂Èó¥ -->
+                        <!-- ÕÍ≥… ±º‰ -->
                         <button type="button" @click="showCalendar = true"
                             class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">ÂÆåÊàêÊó∂Èó¥<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">ÕÍ≥… ±º‰<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
                                 <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
-                                    {{ form.findat || 'ËØ∑ÈÄâÊã©' }}
+                                    {{ form.findat || '«Î—°‘Ò' }}
                                 </span>
                                 <svg class="h-3.5 w-3.5 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
                                     <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
@@ -133,28 +133,28 @@
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!-- ‰∫ãÈ°πÁ±ªÂà´ -->
+                        <!--  ¬œÓ¿‡± -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">‰∫ãÈ°πÁ±ªÂà´<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700"> ¬œÓ¿‡±<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.kpisty === 1 ? 'border-transparent bg-[#34C759] text-white shadow-[0_1px_4px_rgba(52,199,89,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.kpisty = 1">
-                                    Âä†ÂàÜÈ°π
+                                    º”∑÷œÓ
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.kpisty === -1 ? 'border-transparent bg-[#FF3B30] text-white shadow-[0_1px_4px_rgba(255,59,48,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.kpisty = -1">
-                                    ÂáèÂàÜÈ°π
+                                    ºı∑÷œÓ
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <van-calendar v-model:show="showCalendar" :show-confirm="false" color="#2563eb"
+                    <van-calendar v-model:show="showCalendar" :show-confirm="false" color="#267EF0"
                         @confirm="onCalendarConfirm" @cancel="showCalendar = false" />
                 </form>
 
@@ -163,13 +163,13 @@
                     <SearchBar @select="goToPersonList" />
 
                     <div class="mt-6 px-4">
-                        <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">ÊúÄËøë‰∫∫Âëò</p>
+                        <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">◊ÓΩ¸»À‘±</p>
                         <div
                             class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] divide-y divide-black/[0.05]">
                             <button v-for="person in QueryPeople" :key="person.acct" @click="goToPersonList(person)"
                                 class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-black/[0.06]">
                                 <div
-                                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white shadow-sm overflow-hidden">
+                                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-sm font-semibold text-white shadow-sm overflow-hidden">
                                     <img v-if="person.avatar" :src="person.avatar" :alt="person.usrnam"
                                         class="h-full w-full object-cover" />
                                     <span v-else>{{ person.usrnam?.charAt(0) }}</span>
@@ -190,12 +190,18 @@
         </div>
 
         <!-- Submit Button -->
-        <div v-if="activeTab === 'record'"
-            class="fixed inset-x-0 bottom-0 border-t border-black/[0.06] bg-[#F5F6F8]/90 backdrop-blur-xl">
-            <div class="mx-auto w-full max-w-md px-4 py-3">
-                <button type="submit" form="record-form"
-                    class="h-12 w-full rounded-[14px] bg-[#007AFF] text-[15px] font-semibold tracking-wide text-white shadow-[0_4px_16px_rgba(0,122,255,0.38)] transition-all active:scale-[0.98] active:bg-[#0066D6]">
-                    Êèê‰∫§
+        <div v-if="activeTab === 'record'" class="fixed inset-x-0 bottom-0 bg-[#F5F6F7]/90 backdrop-blur-xl">
+            <div class="mx-auto w-full max-w-md px-4 pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+                <button type="submit" form="record-form" :disabled="isSubmitting"
+                    class="h-12 w-full rounded-[14px] bg-[#267EF0] text-[15px] font-semibold tracking-wide text-white shadow-[0_4px_16px_rgba(38,126,240,0.38)] transition-all active:scale-[0.98] active:bg-[#1a6ad4] disabled:opacity-60 disabled:active:scale-100">
+                    <span v-if="isSubmitting" class="flex items-center justify-center gap-2">
+                        <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+                            <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                        </svg>
+                        Ã·Ωª÷–°≠
+                    </span>
+                    <span v-else>Ã·Ωª</span>
                 </button>
             </div>
         </div>
@@ -226,7 +232,7 @@ const showCalendar = ref(false)
 const queryKeyword = ref('')
 const isRestoringTab = ref(false)
 
-const todayStr = computed(() => dayjs().format('YYYYÂπ¥MÊúàDÊó•'))
+const todayStr = computed(() => dayjs().format('YYYYƒÍM‘¬D»’'))
 
 const tabOrder = {
     record: 0,
@@ -278,7 +284,7 @@ const fetchQueryPeople = async () => {
     const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
     const edat = dayjs().format('YYYY-MM-DD')
     const response = await http.post('/findmyusers', { qryflg: 4, bdat, edat })
-    console.log('ÊúÄËøë‰∫∫ÂëòÊü•ËØ¢ÁªìÊûúÔºö', response)
+    console.log('◊ÓΩ¸»À‘±≤È—ØΩ·π˚£∫', response)
     QueryPeople.value = response ?? []
 }
 
@@ -325,17 +331,25 @@ const resetForm = () => {
     contactSelectionStore.clearSelectedContacts()
 }
 
+const isSubmitting = ref(false)
+
 const onSubmit = async () => {
-    const toUsers = selectedContactsData.value.map(c => c.acct).filter(Boolean).join(',')
-    await http.post('/saveevent', {
-        eventmsg: form.eventmsg,
-        findat: form.findat,
-        kpisty: form.kpisty,
-        logsty: form.logsty,
-        toUsers,
-    })
-    Toast.success('Êèê‰∫§ÊàêÂäü')
-    resetForm()
+    if (isSubmitting.value) return
+    isSubmitting.value = true
+    try {
+        const toUsers = selectedContactsData.value.map(c => c.acct).filter(Boolean).join(',')
+        await http.post('/saveevent', {
+            eventmsg: form.eventmsg,
+            findat: form.findat,
+            kpisty: form.kpisty,
+            logsty: form.logsty,
+            toUsers,
+        })
+        Toast.success('Ã·Ωª≥…π¶')
+        resetForm()
+    } finally {
+        isSubmitting.value = false
+    }
 }
 
 onMounted(() => {
@@ -357,6 +371,6 @@ watch(() => route.query.tab, () => {
 
 <route lang="yaml">
 meta:
-    title: ‰∫ã‰ª∂ÁôªËÆ∞
+    title:  ¬º˛µ«º«
     layout: Default
 </route>

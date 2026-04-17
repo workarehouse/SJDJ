@@ -1,5 +1,5 @@
 <template>
-    <section class="min-h-screen pb-10" style="background: #f0f4f8">
+    <section class="min-h-screen pb-10" style="background: #F5F6F7">
         <!-- Header -->
         <div class="sticky top-0 z-20 bg-white shadow-[0_1px_0_0_#e2e8f0]">
 
@@ -13,7 +13,7 @@
                             clip-rule="evenodd" />
                     </svg>
                     <input v-model="keyword" type="text" placeholder="关键字搜素…"
-                        class="w-full cursor-text rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-8 text-xs text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                        class="w-full cursor-text rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-8 text-xs text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#267EF0]/40 focus:bg-white focus:ring-2 focus:ring-[#267EF0]/10"
                         @input="onKeywordInput" />
                     <button v-if="keyword" type="button" @click="clearKeyword"
                         class="absolute right-2.5 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full bg-slate-300 text-white transition-colors duration-150 hover:bg-slate-500">
@@ -28,27 +28,32 @@
 
             <!-- Tabs + filter row -->
             <div class="flex items-center justify-between border-t border-slate-100 px-4 py-2">
-                <div class="flex items-center gap-1">
+                <!-- iOS Segmented Control -->
+                <div class="relative flex rounded-lg bg-slate-100 p-0.5">
+                    <!-- 滑动指示器 -->
+                    <span
+                        class="pointer-events-none absolute inset-y-0.5 w-1/3 rounded-md bg-white shadow-sm transition-transform duration-200 ease-out"
+                        :style="{ transform: `translateX(${activeTypeIndex * 100}%)` }"></span>
                     <button @click="activeType = 'all'"
-                        class="rounded-md px-3 py-1 text-xs font-semibold transition-colors"
-                        :class="activeType === 'all' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'">
+                        class="relative z-10 flex-1 whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium transition-colors duration-150"
+                        :class="activeType === 'all' ? 'text-slate-800' : 'text-slate-400'">
                         全部 {{ recordCount }}
                     </button>
                     <button @click="activeType = '1'"
-                        class="rounded-md px-3 py-1 text-xs font-semibold transition-colors"
-                        :class="activeType === '1' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'">
+                        class="relative z-10 flex-1 whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium transition-colors duration-150"
+                        :class="activeType === '1' ? 'text-slate-800' : 'text-slate-400'">
                         督办 {{ superviseCount }}
                     </button>
                     <button @click="activeType = '2'"
-                        class="rounded-md px-3 py-1 text-xs font-semibold transition-colors"
-                        :class="activeType === '2' ? 'bg-slate-900 text-white' : 'text-slate-500 hover:bg-slate-100'">
+                        class="relative z-10 flex-1 whitespace-nowrap rounded-md px-3 py-1 text-xs font-medium transition-colors duration-150"
+                        :class="activeType === '2' ? 'text-slate-800' : 'text-slate-400'">
                         记事 {{ noteCount }}
                     </button>
                 </div>
                 <div class="flex items-center gap-1.5">
                     <button type="button" @click="showDatePicker = true"
                         class="flex items-center gap-1 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-colors"
-                        :class="hasDateFilter ? 'border-blue-300 bg-blue-50 text-blue-700' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
+                        :class="hasDateFilter ? 'border-[#267EF0]/40 bg-[#267EF0]/10 text-[#267EF0]' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'">
                         <svg class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd"
                                 d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
@@ -77,16 +82,16 @@
                 <div class="px-4 pt-3 pb-3.5">
                     <!-- 类型行 -->
                     <div class="mb-2.5 flex items-center gap-2">
-                        <!-- 类型：主角，实色 badge -->
-                        <span class="inline-flex items-center rounded px-2 py-0.5 text-[11px] font-bold tracking-wide"
-                            :class="item.logsty === '1' ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-500'">
+                        <!-- 类型：iOS SF Symbol 风格胶囊，纯色填充 + 系统字重 -->
+                        <span
+                            class="inline-flex items-center gap-1 rounded-full px-2.5 py-[3px] text-[11px] font-semibold"
+                            :class="item.logsty === '1' ? 'bg-[#267EF0]/10 text-[#267EF0]' : 'bg-[#8E8E93]/10 text-[#8E8E93]'"
+                            style="-webkit-font-smoothing: antialiased; letter-spacing: -0.1px;">
                             {{ item.logstytxt }}
                         </span>
-                        <!-- 进行中/已作废：辅助信息，小圆点 + 轻文字 -->
-                        <span v-if="item.logsty === '1'" class="flex items-center gap-1 text-[10px] text-slate-400">
-                            <span class="inline-block h-1.5 w-1.5 rounded-full"
-                                :class="item.state === 'C' ? 'bg-amber-400' : 'bg-slate-300'"></span>
-                            {{ item.state === 'C' ? '进行中' : '已作废' }}
+                        <!-- 进行中/已作废：极弱，斜杠前缀纯文字 -->
+                        <span v-if="item.logsty === '1'" class="text-[10px] text-slate-300">
+                            / {{ item.state === 'C' ? '进行中' : '已作废' }}
                         </span>
                         <!-- kpi：最弱，纯文字提示 -->
                         <span v-if="item.kpistytxt" class="ml-auto text-[10px] text-slate-400">
@@ -134,7 +139,7 @@
             </div>
         </div>
 
-        <van-calendar v-model:show="showDatePicker" type="range" :show-confirm="false" color="#2563eb"
+        <van-calendar v-model:show="showDatePicker" type="range" :show-confirm="false" color="#267EF0"
             @confirm="onDateConfirm" @cancel="showDatePicker = false" />
     </section>
 </template>
@@ -199,7 +204,13 @@ const filteredPersonRecords = computed(() => {
     return personRecords.value.filter(item => item.logsty === activeType.value)
 })
 
-const recordCount = computed(() => filteredPersonRecords.value.length)
+const activeTypeIndex = computed(() => {
+    if (activeType.value === 'all') return 0
+    if (activeType.value === '1') return 1
+    return 2
+})
+
+const recordCount = computed(() => personRecords.value.length)
 const superviseCount = computed(() => personRecords.value.filter(i => i.logsty === '1').length)
 const noteCount = computed(() => personRecords.value.filter(i => i.logsty === '2').length)
 
@@ -216,6 +227,7 @@ const clearDateFilter = () => {
 }
 
 onMounted(() => {
+    document.title = personName.value
     fetchRecords()
 })
 </script>
@@ -224,6 +236,6 @@ onMounted(() => {
 
 <route lang="yaml">
 meta:
-    title: 人员列表
+    title: 
     layout: Default
 </route>

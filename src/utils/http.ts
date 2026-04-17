@@ -2,7 +2,6 @@ import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'a
 import axios from 'axios'
 import Toast from '@/utils/Toast'
 import store from 'store'
-import router from '@/router'
 
 const instance: AxiosInstance = axios.create({
     baseURL: import.meta.env.MODE === 'development' ? '/_api' : import.meta.env.VITE_API_BASE_URL,
@@ -48,8 +47,10 @@ function handleErrorCode(code: number, msg: string = 'An error occurred') {
     switch (code) {
         case 401:
             console.error('Unauthorized: Please log in.')
-            // 登陆失效,请重新登陆
-            router.push('/login')
+            // 登录失效，跳转到统一登录页（仅生产环境）
+            if (import.meta.env.MODE !== 'development') {
+                window.location.href = 'https://devenv.luoniushan.com/eventapi/event/qwauth/login'
+            }
             break
         case 500:
             Toast.error(msg || 'Server Error')

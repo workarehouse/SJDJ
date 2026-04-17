@@ -1,124 +1,127 @@
 <template>
-    <section class="min-h-screen bg-white">
-        <!-- Header -->
-        <div class="sticky top-0 z-40  bg-blue-100 ">
-            <div class="relative mx-auto w-full max-w-md">
+    <!-- Õ‚≤„ flex ¡–≤ºæ÷£¨∏ﬂ∂»≥≈¬˙∂ØÃ¨ ”ø⁄ -->
+    <section class="flex h-dvh flex-col bg-[#F5F6F7]">
 
-                <!-- Search Bar Component -->
-                <SearchBar :contacts="contacts" searchBarBgClass="bg-blue-100" @select="handleSearchSelect"
-                    @search-mode-change="handleSearchModeChange" />
+        <!-- ø…πˆ∂Ø«¯”Ú£∫∞¸∫¨ header + “——°‘Ò + ¡–±Ì -->
+        <div class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <div class="sticky top-0 z-40 bg-gradient-to-b from-white to-[#F5F6F7] ">
+                <div class="relative mx-auto w-full max-w-md">
+                    <SearchBar :contacts="contacts" :searchBarBgClass="isSearching ? 'bg-white' : ''"
+                        @select="handleSearchSelect" @search-mode-change="handleSearchModeChange" />
+                </div>
             </div>
-        </div>
 
-        <!-- Â∑≤ÈÄâÊã© -->
-        <Transition enter-active-class="animate-in fade-in duration-200"
-            leave-active-class="animate-out fade-out duration-150">
-            <div v-if="selectedContacts.length > 0 && !isSearching" class="border-b border-slate-100 bg-white">
-                <div class="mx-auto w-full max-w-md">
-                    <div class="flex items-center justify-between px-4 pt-3 pb-2">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-xs font-semibold text-slate-700">Â∑≤ÈÄâÊã©</span>
-                            <span
-                                class="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-semibold text-white">{{
-                                    selectedContacts.length }}</span>
+            <!-- “——°‘Ò -->
+            <Transition enter-active-class="animate-in fade-in duration-200"
+                leave-active-class="animate-out fade-out duration-150">
+                <div v-if="selectedContacts.length > 0 && !isSearching" class="border-b border-slate-100 bg-white">
+                    <div class="mx-auto w-full max-w-md">
+                        <div class="flex items-center justify-between px-4 pt-3 pb-2">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs font-semibold text-slate-700">“——°‘Ò</span>
+                                <span
+                                    class="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[#267EF0] px-1 text-[10px] font-semibold text-white">{{
+                                        selectedContacts.length }}</span>
+                            </div>
+                            <button @click="clearSelectedContacts"
+                                class="text-xs font-medium text-slate-400 transition-colors hover:text-[#FF4650]">«Âø’</button>
                         </div>
-                        <button @click="clearSelectedContacts"
-                            class="text-xs font-medium text-slate-400 transition-colors hover:text-rose-500">Ê∏ÖÁ©∫</button>
-                    </div>
-                    <div class="flex flex-wrap gap-x-4 gap-y-3 px-4 pb-3">
-                        <TransitionGroup enter-active-class="transition-all duration-200 ease-out"
-                            enter-from-class="opacity-0 scale-75" enter-to-class="opacity-100 scale-100"
-                            leave-active-class="transition-all duration-150 ease-in absolute"
-                            leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-75">
-                            <button v-for="contact in selectedContacts" :key="contact.acct"
-                                @click="toggleContact(contact)"
-                                class="flex flex-shrink-0 flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform duration-100">
-                                <div class="relative h-11 w-11">
-                                    <div
-                                        class="h-11 w-11 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center overflow-hidden text-white font-semibold text-sm ring-2 ring-blue-200">
-                                        <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
-                                            class="h-full w-full object-cover" />
-                                        <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '‰∫∫' }}</span>
+                        <div class="max-h-40 overflow-y-auto flex flex-wrap gap-x-4 gap-y-3 px-4 py-2">
+                            <TransitionGroup enter-active-class="transition-all duration-200 ease-out"
+                                enter-from-class="opacity-0 scale-75" enter-to-class="opacity-100 scale-100"
+                                leave-active-class="transition-all duration-150 ease-in absolute"
+                                leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-75">
+                                <button v-for="contact in selectedContacts" :key="contact.acct"
+                                    @click="toggleContact(contact)"
+                                    class="flex flex-shrink-0 flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform duration-100">
+                                    <div class="relative h-11 w-11">
+                                        <div
+                                            class="h-11 w-11 rounded-full bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] flex items-center justify-center overflow-hidden text-white font-semibold text-sm ring-2 ring-[#267EF0]/30">
+                                            <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                                                class="h-full w-full object-cover" />
+                                            <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '»À' }}</span>
+                                        </div>
+                                        <span
+                                            class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[#267EF0] text-white shadow-sm">
+                                            <svg viewBox="0 0 10 10" class="h-2 w-2" fill="none">
+                                                <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" />
+                                            </svg>
+                                        </span>
                                     </div>
-                                    <span
-                                        class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm">
-                                        <svg viewBox="0 0 10 10" class="h-2 w-2" fill="none">
-                                            <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                <span class="max-w-[3rem] truncate text-[10px] font-medium text-slate-600">{{
-                                    contact.usrnam }}</span>
-                            </button>
-                        </TransitionGroup>
+                                    <span class="max-w-[3rem] truncate text-[10px] font-medium text-slate-600">{{
+                                        contact.usrnam }}</span>
+                                </button>
+                            </TransitionGroup>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Transition>
+            </Transition>
 
-        <div class="mx-auto w-full max-w-md pb-20">
-            <div class="px-4 py-2.5 flex items-center gap-2">
-                <span class="h-3.5 w-0.5 rounded-full bg-blue-500"></span>
-                <span class="text-xs font-semibold text-slate-600">ÊàëÁöÑ‰∏ãÂ±û</span>
-            </div>
-            <!-- È™®Êû∂Â±è -->
-            <template v-if="isLoading">
-                <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-4 py-3">
-                    <div class="h-5 w-5 rounded bg-slate-100 animate-pulse"></div>
-                    <div class="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 animate-pulse"></div>
-                    <div class="flex-1 space-y-1.5">
-                        <div class="h-3.5 w-24 rounded bg-slate-100 animate-pulse"></div>
-                        <div class="h-3 w-16 rounded bg-slate-100 animate-pulse"></div>
-                    </div>
+            <!-- ¡–±Ì -->
+            <div class="mx-auto w-full max-w-md">
+                <div v-if="!isLoading && contacts.length > 0" class="px-4 py-2.5 flex items-center gap-2">
+                    <span class="text-xs font-semibold text-slate-600">Œ“µƒœ¬ Ù</span>
                 </div>
-            </template>
-
-            <TransitionGroup v-else tag="div" enter-active-class="transition-all duration-200 ease-out"
-                enter-from-class="opacity-0 -translate-y-1" enter-to-class="opacity-100 translate-y-0"
-                leave-active-class="transition-all duration-150 ease-in" leave-from-class="opacity-100"
-                leave-to-class="opacity-0" class="divide-y divide-slate-200">
-                <button v-for="contact in unselectedContacts" :key="contact.acct" @click="toggleContact(contact)"
-                    class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors duration-150 hover:bg-blue-50 active:bg-blue-100 active:scale-[0.99]">
-                    <!-- Checkbox -->
-                    <input type="checkbox" :checked="isSelected(contact.acct)"
-                        class="h-5 w-5 rounded border-slate-300 text-blue-600 cursor-pointer" />
-                    <!-- Avatar -->
-                    <div
-                        class="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center overflow-hidden text-white font-semibold text-sm">
-                        <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
-                            class="h-full w-full object-cover" />
-                        <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '‰∫∫' }}</span>
+                <!-- π«º‹∆¡ -->
+                <template v-if="isLoading">
+                    <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-4 py-3">
+                        <div class="h-5 w-5 rounded bg-slate-100 animate-pulse"></div>
+                        <div class="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 animate-pulse"></div>
+                        <div class="flex-1 space-y-1.5">
+                            <div class="h-3.5 w-24 rounded bg-slate-100 animate-pulse"></div>
+                            <div class="h-3 w-16 rounded bg-slate-100 animate-pulse"></div>
+                        </div>
                     </div>
-                    <!-- Info -->
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-slate-900">{{ contact.usrnam }}</p>
-                        <p class="text-xs text-slate-500">{{ contact.postnam }}</p>
-                    </div>
-                </button>
-            </TransitionGroup>
+                </template>
 
-            <!-- Á©∫Áä∂ÊÄÅ -->
-            <div v-if="!isLoading && unselectedContacts.length === 0 && selectedContacts.length === 0"
-                class="flex flex-col items-center justify-center py-16 text-center">
-                <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
-                    <svg class="h-7 w-7 text-slate-300" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                    </svg>
+                <TransitionGroup v-else tag="div" enter-active-class="transition-all duration-200 ease-out"
+                    enter-from-class="opacity-0 -translate-y-1" enter-to-class="opacity-100 translate-y-0"
+                    leave-active-class="transition-all duration-150 ease-in" leave-from-class="opacity-100"
+                    leave-to-class="opacity-0" class="divide-y divide-slate-200">
+                    <button v-for="contact in contacts" :key="contact.acct" @click="toggleContact(contact)"
+                        class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors duration-150 hover:bg-[#267EF0]/5 active:bg-[#267EF0]/10 active:scale-[0.99]">
+                        <!-- Checkbox -->
+                        <input type="checkbox" :checked="isSelected(contact.acct)"
+                            class="h-5 w-5 rounded border-slate-300 text-[#267EF0] cursor-pointer" />
+                        <!-- Avatar -->
+                        <div
+                            class="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] flex items-center justify-center overflow-hidden text-white font-semibold text-sm">
+                            <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                                class="h-full w-full object-cover" />
+                            <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '»À' }}</span>
+                        </div>
+                        <!-- Info -->
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-medium text-slate-900">{{ contact.usrnam }}</p>
+                            <p class="text-xs text-slate-500">{{ contact.postnam }}</p>
+                        </div>
+                    </button>
+                </TransitionGroup>
+
+                <!-- ø’◊¥Ã¨ -->
+                <div v-if="!isLoading && contacts.length === 0"
+                    class="flex flex-col items-center justify-center py-16 text-center">
+                    <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                        <svg class="h-7 w-7 text-slate-300" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                        </svg>
+                    </div>
+                    <p class="text-sm font-medium text-slate-600">‘›Œﬁœ¬ Ù»À‘±</p>
+                    <p class="mt-1 text-xs text-slate-400">ø…Õ®π˝…œ∑ΩÀ—À˜ÃÌº”»À‘±</p>
                 </div>
-                <p class="text-sm font-medium text-slate-600">ÊöÇÊó†‰∏ãÂ±û‰∫∫Âëò</p>
-                <p class="mt-1 text-xs text-slate-400">ÂèØÈÄöËøá‰∏äÊñπÊêúÁ¥¢Ê∑ªÂä†‰∫∫Âëò</p>
             </div>
         </div>
 
-        <!-- Confirm Button -->
-        <div class="fixed inset-x-0 bottom-0 border-t border-slate-200 bg-white">
-            <div class="mx-auto w-full max-w-md px-4 py-3">
+        <!-- »∑»œ∞¥≈•£∫∆’Õ®µ◊≤ø‘™Àÿ£¨≤ª‘Ÿ fixed -->
+        <div class="border-t border-slate-100 bg-white">
+            <div class="mx-auto w-full max-w-md px-4 pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
                 <button @click="confirmSelection"
-                    class="h-11 w-full rounded-lg bg-blue-600 text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.65)] transition-all duration-150 hover:bg-blue-700 active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
+                    class="h-11 w-full rounded-lg bg-[#267EF0] text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(38,126,240,0.65)] transition-all duration-150 hover:bg-[#1a6ad4] active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
                     :disabled="selectedContacts.length === 0">
-                    Á°ÆËÆ§
+                    »∑»œ
                 </button>
             </div>
         </div>
@@ -221,6 +224,6 @@ onActivated(() => {
 
 <route lang="yaml">
 meta:
-    title: ÈÄâÊã©‰∫ã‰ª∂‰∫∫Âëò
+    title: —°‘Ò ¬º˛»À‘±
     layout: Default
 </route>

@@ -4,7 +4,7 @@
             <Transition enter-active-class="animate-in fade-in slide-in-from-bottom-2 duration-200"
                 leave-active-class="animate-out fade-out slide-out-to-top-1 duration-150">
                 <button v-if="!isSearching" @click="enterSearchMode"
-                    class="flex w-full items-center justify-center gap-2 rounded-lg bg-white px-3 py-1.5 text-slate-500 transition-colors hover:text-slate-600">
+                    class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-50 bg-white px-3 py-1.5 text-slate-500 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:text-slate-600">
                     <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5" />
@@ -25,7 +25,7 @@
                             class="h-6 flex-1 border-0 bg-transparent text-sm text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:outline-none focus:ring-0" />
                     </div>
                     <button @click="exitSearchMode"
-                        class="shrink-0 text-sm font-medium text-blue-600 hover:text-blue-700">
+                        class="shrink-0 text-sm font-medium text-[#267EF0] hover:text-[#1a6ad4]">
                         取消
                     </button>
                 </div>
@@ -38,12 +38,11 @@
                 <div class="h-[calc(100vh-3.5rem)] overflow-y-auto bg-white">
                     <div class="divide-y divide-slate-200">
                         <button v-for="contact in searchResults" :key="contact.id" @click="selectResult(contact)"
-                            class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors hover:bg-blue-50">
+                            class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors hover:bg-[#267EF0]/5">
                             <div
-                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white">
-                                <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.name"
+                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-sm font-semibold text-white">
+                                <img :src="contact.avatar || defaultAvatar" :alt="contact.name"
                                     class="h-full w-full object-cover" />
-                                <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '人' }}</span>
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-medium text-slate-900">{{ contact.name }}</p>
@@ -74,6 +73,7 @@
 <script setup>
 import { ref, nextTick } from 'vue'
 import http from '@/utils/http'
+import defaultAvatar from '@/assets/default-avatar.svg'
 
 const props = defineProps({
     placeholder: {
@@ -90,7 +90,7 @@ const props = defineProps({
     },
     searchBarBgClass: {
         type: String,
-        default: 'bg-white'
+        default: ''
     },
 })
 
