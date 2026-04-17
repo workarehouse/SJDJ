@@ -5,11 +5,11 @@
 html,
 body,
 #app {
-    @apply h-full scroll-smooth;
+    @apply h-full;
 }
 
 html {
-    @apply bg-[linear-gradient(180deg,#eef3fb_0%,#f4f6f9_42%,#f3f4f6_100%)];
+    background-color: #f5f6f8;
 }
 
 /* 滚动条美化 */

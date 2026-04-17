@@ -12,9 +12,9 @@ const router = createRouter({
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) return savedPosition
         else {
-            if (to.hash) return { el: to.hash, behavior: 'smooth' }
+            if (to.hash) return { el: to.hash }
         }
-    }
+    },
 })
 
 router.beforeEach((to, from, next) => {

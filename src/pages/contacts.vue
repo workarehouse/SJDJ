@@ -3,60 +3,112 @@
         <!-- Header -->
         <div class="sticky top-0 z-40  bg-blue-100 ">
             <div class="relative mx-auto w-full max-w-md">
-                <div class="overflow-hidden transition-all duration-200 ease-out"
-                    :class="isSearching ? 'max-h-0 opacity-0' : 'max-h-14 opacity-100'">
-                    <div class="flex items-center gap-2 px-3 py-3">
-                        <RouterLink to="/"
-                            class="flex h-8 w-8 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100">
-                            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12.5 16.5L5 9L12.5 1.5" stroke="currentColor" stroke-width="1.5"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </RouterLink>
-                        <h1 class="flex-1 text-center text-sm font-semibold text-slate-900">选择事件人员</h1>
-                        <div class="w-8"></div>
-                    </div>
-                </div>
 
                 <!-- Search Bar Component -->
                 <SearchBar :contacts="contacts" searchBarBgClass="bg-blue-100" @select="handleSearchSelect"
-                    @search-mode-change="handleSearchModeChange" :search-fn="searchUsers" />
-
-                <Transition enter-active-class="animate-in fade-in slide-in-from-top-1 duration-200"
-                    leave-active-class="animate-out fade-out slide-out-to-top-1 duration-150">
-                    <div v-if="selectedContacts.length > 0 && !isSearching"
-                        class="flex items-center justify-between px-3 pb-2">
-                        <p class="text-xs text-slate-500">
-                            已选择人员（{{ selectedContacts.length }}）
-                        </p>
-                        <button @click="clearSelectedContacts"
-                            class="text-xs font-medium text-blue-600 transition-colors hover:text-blue-700">
-                            清空
-                        </button>
-                    </div>
-                </Transition>
+                    @search-mode-change="handleSearchModeChange" />
             </div>
         </div>
 
-        <!-- Contacts List / Search Results -->
+        <!-- 已选择 -->
+        <Transition enter-active-class="animate-in fade-in duration-200"
+            leave-active-class="animate-out fade-out duration-150">
+            <div v-if="selectedContacts.length > 0 && !isSearching" class="border-b border-slate-100 bg-white">
+                <div class="mx-auto w-full max-w-md">
+                    <div class="flex items-center justify-between px-4 pt-3 pb-2">
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-xs font-semibold text-slate-700">已选择</span>
+                            <span
+                                class="flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-blue-600 px-1 text-[10px] font-semibold text-white">{{
+                                    selectedContacts.length }}</span>
+                        </div>
+                        <button @click="clearSelectedContacts"
+                            class="text-xs font-medium text-slate-400 transition-colors hover:text-rose-500">清空</button>
+                    </div>
+                    <div class="flex flex-wrap gap-x-4 gap-y-3 px-4 pb-3">
+                        <TransitionGroup enter-active-class="transition-all duration-200 ease-out"
+                            enter-from-class="opacity-0 scale-75" enter-to-class="opacity-100 scale-100"
+                            leave-active-class="transition-all duration-150 ease-in absolute"
+                            leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-75">
+                            <button v-for="contact in selectedContacts" :key="contact.acct"
+                                @click="toggleContact(contact)"
+                                class="flex flex-shrink-0 flex-col items-center gap-1 cursor-pointer active:scale-90 transition-transform duration-100">
+                                <div class="relative h-11 w-11">
+                                    <div
+                                        class="h-11 w-11 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center overflow-hidden text-white font-semibold text-sm ring-2 ring-blue-200">
+                                        <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                                            class="h-full w-full object-cover" />
+                                        <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '人' }}</span>
+                                    </div>
+                                    <span
+                                        class="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-white shadow-sm">
+                                        <svg viewBox="0 0 10 10" class="h-2 w-2" fill="none">
+                                            <path d="M2 2l6 6M8 2l-6 6" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" />
+                                        </svg>
+                                    </span>
+                                </div>
+                                <span class="max-w-[3rem] truncate text-[10px] font-medium text-slate-600">{{
+                                    contact.usrnam }}</span>
+                            </button>
+                        </TransitionGroup>
+                    </div>
+                </div>
+            </div>
+        </Transition>
+
         <div class="mx-auto w-full max-w-md pb-20">
-            <div class="divide-y divide-slate-200">
-                <button v-for="contact in contacts" :key="contact.id" @click="toggleContact(contact)"
-                    class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors hover:bg-blue-50">
+            <div class="px-4 py-2.5 flex items-center gap-2">
+                <span class="h-3.5 w-0.5 rounded-full bg-blue-500"></span>
+                <span class="text-xs font-semibold text-slate-600">我的下属</span>
+            </div>
+            <!-- 骨架屏 -->
+            <template v-if="isLoading">
+                <div v-for="i in 6" :key="i" class="flex items-center gap-3 px-4 py-3">
+                    <div class="h-5 w-5 rounded bg-slate-100 animate-pulse"></div>
+                    <div class="h-10 w-10 flex-shrink-0 rounded-lg bg-slate-100 animate-pulse"></div>
+                    <div class="flex-1 space-y-1.5">
+                        <div class="h-3.5 w-24 rounded bg-slate-100 animate-pulse"></div>
+                        <div class="h-3 w-16 rounded bg-slate-100 animate-pulse"></div>
+                    </div>
+                </div>
+            </template>
+
+            <TransitionGroup v-else tag="div" enter-active-class="transition-all duration-200 ease-out"
+                enter-from-class="opacity-0 -translate-y-1" enter-to-class="opacity-100 translate-y-0"
+                leave-active-class="transition-all duration-150 ease-in" leave-from-class="opacity-100"
+                leave-to-class="opacity-0" class="divide-y divide-slate-200">
+                <button v-for="contact in unselectedContacts" :key="contact.acct" @click="toggleContact(contact)"
+                    class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors duration-150 hover:bg-blue-50 active:bg-blue-100 active:scale-[0.99]">
                     <!-- Checkbox -->
-                    <input type="checkbox" :checked="isSelected(contact.id)"
+                    <input type="checkbox" :checked="isSelected(contact.acct)"
                         class="h-5 w-5 rounded border-slate-300 text-blue-600 cursor-pointer" />
                     <!-- Avatar -->
                     <div
-                        class="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-                        {{ contact.avatar }}
+                        class="h-10 w-10 flex-shrink-0 rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center overflow-hidden text-white font-semibold text-sm">
+                        <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                            class="h-full w-full object-cover" />
+                        <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '人' }}</span>
                     </div>
                     <!-- Info -->
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium text-slate-900">{{ contact.name }}</p>
-                        <p class="text-xs text-slate-500">{{ contact.position }}</p>
+                        <p class="text-sm font-medium text-slate-900">{{ contact.usrnam }}</p>
+                        <p class="text-xs text-slate-500">{{ contact.postnam }}</p>
                     </div>
                 </button>
+            </TransitionGroup>
+
+            <!-- 空状态 -->
+            <div v-if="!isLoading && unselectedContacts.length === 0 && selectedContacts.length === 0"
+                class="flex flex-col items-center justify-center py-16 text-center">
+                <div class="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100">
+                    <svg class="h-7 w-7 text-slate-300" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                    </svg>
+                </div>
+                <p class="text-sm font-medium text-slate-600">暂无下属人员</p>
+                <p class="mt-1 text-xs text-slate-400">可通过上方搜索添加人员</p>
             </div>
         </div>
 
@@ -64,7 +116,7 @@
         <div class="fixed inset-x-0 bottom-0 border-t border-slate-200 bg-white">
             <div class="mx-auto w-full max-w-md px-4 py-3">
                 <button @click="confirmSelection"
-                    class="h-11 w-full rounded-lg bg-blue-600 text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.65)] transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+                    class="h-11 w-full rounded-lg bg-blue-600 text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(37,99,235,0.65)] transition-all duration-150 hover:bg-blue-700 active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
                     :disabled="selectedContacts.length === 0">
                     确认
                 </button>
@@ -79,6 +131,7 @@ import { useRouter } from 'vue-router'
 import { useContactSelectionStore } from '@/store/contactSelection'
 import SearchBar from '@/components/SearchBar.vue'
 import http from '@/utils/http'
+import dayjs from 'dayjs'
 
 const router = useRouter()
 const contactSelectionStore = useContactSelectionStore()
@@ -92,90 +145,31 @@ const syncSelectedContactsFromStore = () => {
     selectedContacts.value = storeContacts.map(contact => ({ ...contact }))
 }
 
-// Mock contacts data
-const contacts = ref([
-    {
-        id: 1,
-        name: '张三发士大夫顺丰速递地方撒发送是',
-        position: '项目经理',
-        avatar: '张'
-    },
-    {
-        id: 2,
-        name: '李四',
-        position: '技术负责人',
-        avatar: '李'
-    },
-    {
-        id: 3,
-        name: '王五',
-        position: '产品总监',
-        avatar: '王'
-    },
-    {
-        id: 4,
-        name: '赵六',
-        position: '设计师',
-        avatar: '赵'
-    },
-    {
-        id: 5,
-        name: '孙七',
-        position: '运营专员',
-        avatar: '孙'
-    },
-    {
-        id: 6,
-        name: '周八',
-        position: '开发工程师',
-        avatar: '周'
-    },
-    {
-        id: 7,
-        name: '吴九',
-        position: '测试工程师',
-        avatar: '吴'
-    },
-    {
-        id: 8,
-        name: '郑十',
-        position: '人力资源',
-        avatar: '郑'
-    },
-])
+const contacts = ref([])
+const isLoading = ref(false)
 
-const mapSearchUser = (item, index) => {
-    const name = item?.usrnam || ''
-    const position = item?.postnam || ''
-    const avatarSource = item?.avatar || name || item?.acct || ''
-    const avatar = avatarSource ? String(avatarSource).trim().charAt(0) : '人'
-
-    return {
-        id: item?.acct || item?.usrnam || `search-user-${index}`,
-        name,
-        position,
-        avatar,
-        acct: item?.acct || '',
-        postnam: position,
-        usrnam: name,
+const fetchContacts = async () => {
+    isLoading.value = true
+    try {
+        const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
+        const edat = dayjs().format('YYYY-MM-DD')
+        const response = await http.post('/findmyusers', { qryflg: 2, bdat, edat })
+        contacts.value = response ?? []
+    } finally {
+        isLoading.value = false
     }
 }
 
-const searchUsers = async (keyword) => {
-    const response = await http.get('/searchusers', {
-        params: { keyword },
-    })
-
-    const result = response?.data?.result ?? []
-    return result.map(mapSearchUser)
+const isSelected = (acct) => {
+    return selectedContacts.value.some(contact => contact.acct === acct)
 }
 
-const isSelected = (contactId) => {
-    return selectedContacts.value.some(contact => contact.id === contactId)
-}
+const unselectedContacts = computed(() =>
+    contacts.value.filter(c => !isSelected(c.acct))
+)
 
 const toggleContact = (contact) => {
-    const index = selectedContacts.value.findIndex(c => c.id === contact.id)
+    const index = selectedContacts.value.findIndex(c => c.acct === contact.acct)
     if (index > -1) {
         selectedContacts.value.splice(index, 1)
     } else {
@@ -185,9 +179,13 @@ const toggleContact = (contact) => {
 
 // Handle search result selection
 const handleSearchSelect = (contact) => {
-    if (!isSelected(contact.id)) {
+    if (!contacts.value.some(c => c.acct === contact.acct)) {
+        contacts.value.unshift(contact)
+    }
+    if (!isSelected(contact.acct)) {
         selectedContacts.value.push(contact)
     }
+    window.scrollTo({ top: 0 })
 }
 
 // Track search mode state
@@ -210,6 +208,7 @@ const clearSelectedContacts = () => {
 }
 
 onMounted(() => {
+    fetchContacts()
     syncSelectedContactsFromStore()
 })
 

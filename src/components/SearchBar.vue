@@ -40,8 +40,10 @@
                         <button v-for="contact in searchResults" :key="contact.id" @click="selectResult(contact)"
                             class="flex w-full items-center gap-3 border-0 bg-white px-4 py-3 text-left transition-colors hover:bg-blue-50">
                             <div
-                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white">
-                                {{ contact.avatar }}
+                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white">
+                                <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.name"
+                                    class="h-full w-full object-cover" />
+                                <span v-else>{{ contact.usrnam ? contact.usrnam.charAt(0) : '人' }}</span>
                             </div>
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-sm font-medium text-slate-900">{{ contact.name }}</p>
@@ -71,12 +73,9 @@
 
 <script setup>
 import { ref, nextTick } from 'vue'
+import http from '@/utils/http'
 
 const props = defineProps({
-    contacts: {
-        type: Array,
-        required: true
-    },
     placeholder: {
         type: String,
         default: '搜索'
@@ -93,11 +92,25 @@ const props = defineProps({
         type: String,
         default: 'bg-white'
     },
-    searchFn: {
-        type: Function,
-        default: null
-    }
 })
+
+const mapSearchUser = (item) => {
+    return {
+        id: item.acct,
+        name: item.usrnam,
+        position: item.postnam,
+        avatar: item.avatar || '',
+        acct: item.acct,
+        usrnam: item.usrnam,
+        postnam: item.postnam,
+    }
+}
+
+const searchFn = async (keyword) => {
+    const response = await http.post('/searchusers', { keyword })
+    const result = response ?? []
+    return result.map(mapSearchUser)
+}
 
 const emit = defineEmits(['select', 'search-mode-change', 'search-query-change'])
 
@@ -145,19 +158,7 @@ const onSearchInput = async () => {
     try {
         let results = []
 
-        if (typeof props.searchFn === 'function') {
-            results = await props.searchFn(query)
-        } else {
-            // Simulate API call delay
-            await new Promise(resolve => setTimeout(resolve, props.searchDelay))
-
-            // Search by filtering contacts
-            const lowerQuery = query.toLowerCase()
-            results = props.contacts.filter(contact =>
-                contact.name.toLowerCase().includes(lowerQuery) ||
-                contact.position.toLowerCase().includes(lowerQuery)
-            )
-        }
+        results = await searchFn(query)
 
         // Ignore outdated responses when user types quickly
         if (currentRequestId !== searchRequestId) {

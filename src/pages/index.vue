@@ -1,14 +1,14 @@
 <template>
-    <section class="min-h-[calc(100vh-4rem)] bg-slate-50 pb-28">
+    <section class="min-h-[calc(100vh-4rem)] bg-gradient-to-b from-white to-[#F5F6F8] pb-28">
         <!-- Sticky Header + Tabs -->
-        <div class="sticky top-0 z-30 border-b border-slate-200/80 bg-white/95 backdrop-blur-sm">
+        <div class="sticky top-0 z-30   backdrop-blur-xl">
             <div class="mx-auto w-full max-w-md">
                 <!-- Tab Switcher -->
                 <div class="px-4 py-3">
                     <div
-                        class="relative grid grid-cols-2 rounded-xl bg-slate-100 p-1 text-center text-sm font-semibold">
+                        class="relative grid grid-cols-2 rounded-xl bg-[#EBEBEB] p-1 text-center text-sm font-semibold">
                         <span
-                            class="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-0.25rem)] rounded-lg bg-white shadow-sm"
+                            class="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-0.25rem)] rounded-lg bg-white shadow-[0_2px_10px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.06)]"
                             :class="[
                                 activeTab === 'query' ? 'translate-x-full' : 'translate-x-0',
                                 isRestoringTab ? 'transition-none' : 'transition-transform duration-250 ease-out',
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="mx-auto w-full max-w-md px-4 pt-4">
+        <div class="mx-auto w-full max-w-md  pt-4">
             <Transition :css="!isRestoringTab" mode="out-in" enter-active-class="transition-all duration-220 ease-out"
                 leave-active-class="transition-all duration-160 ease-in"
                 :enter-from-class="tabDirection === 'right' ? 'translate-x-6 opacity-0' : '-translate-x-6 opacity-0'"
@@ -40,25 +40,44 @@
                     @submit.prevent="onSubmit">
 
                     <!-- Card 1: 事件人员 + 事件分类 -->
-                    <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
+                    <div
+                        class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
                         <!-- 事件人员 -->
                         <RouterLink to="/contacts"
-                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-slate-50 active:bg-slate-100">
+                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事件人员<span
                                     class="ml-0.5 text-rose-500">*</span></span>
-                            <span class="ml-auto flex items-center gap-1 text-sm">
-                                <span :key="contactDisplayText"
-                                    :class="contactDisplayText ? 'text-slate-800' : 'text-slate-400'">
-                                    {{ contactDisplayText || '请选择' }}
+                            <span class="ml-auto flex items-center gap-1.5">
+                                <!-- 未选择 -->
+                                <span v-if="!selectedContactsData.length" class="text-sm text-slate-400">请选择</span>
+                                <!-- 已选择：头像堆叠 + 名称/人数 -->
+                                <span v-else class="flex items-center gap-1.5">
+                                    <span class="flex -space-x-2">
+                                        <div v-for="(contact, i) in selectedContactsData.slice(0, 3)"
+                                            :key="contact.acct"
+                                            class="flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-[9px] font-bold text-white ring-2 ring-white"
+                                            :style="{ zIndex: 3 - i }">
+                                            <img v-if="contact.avatar" :src="contact.avatar" :alt="contact.usrnam"
+                                                class="h-full w-full object-cover" />
+                                            <span v-else>{{ contact.usrnam?.charAt(0) }}</span>
+                                        </div>
+                                        <div v-if="selectedContactsData.length > 3"
+                                            class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-[9px] font-bold text-slate-500 ring-2 ring-white">
+                                            +{{ selectedContactsData.length - 3 }}
+                                        </div>
+                                    </span>
+                                    <span class="text-xs font-medium text-slate-700">
+                                        {{ selectedContactsData.length <= 2 ? contactDisplayText :
+                                            `${selectedContactsData.length} 人` }} </span>
+                                    </span>
+                                    <svg class="h-3.5 w-3.5 shrink-0 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
+                                        <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
                                 </span>
-                                <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="none">
-                                    <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
-                                        stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </span>
                         </RouterLink>
 
-                        <div class="mx-4 h-px bg-slate-100"></div>
+                        <div class="mx-4 h-px bg-black/[0.06]"></div>
 
                         <!-- 事件分类 -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
@@ -67,51 +86,52 @@
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.eventType === '督办' ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                    @click="form.eventType = '督办'">
+                                    :class="form.logsty === '1' ? 'border-transparent bg-[#007AFF] text-white shadow-[0_1px_4px_rgba(0,122,255,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    @click="form.logsty = '1'">
                                     督办
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.eventType === '记事' ? 'border-blue-200 bg-blue-50 text-blue-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                    @click="form.eventType = '记事'">
+                                    :class="form.logsty === '2' ? 'border-transparent bg-[#007AFF] text-white shadow-[0_1px_4px_rgba(0,122,255,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    @click="form.logsty = '2'">
                                     记事
                                 </button>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Card 2: 事件内容 -->
-                    <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
-                        <label class="block px-4 pb-3 pt-3.5">
+                        <div class="mx-4 h-px bg-black/[0.06]"></div>
+
+                        <!-- 事件内容 -->
+                        <label class="block px-4 pb-3 pt-3">
                             <div class="mb-2">
                                 <span class="text-sm font-medium text-slate-700">事件内容<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
-                            <textarea v-model="form.content" rows="4" placeholder="请填写事件详情…"
-                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-slate-400 transition-colors focus-visible:border-blue-200 focus-visible:bg-white focus-visible:outline-none"></textarea>
+                            <textarea v-model="form.eventmsg" rows="4" placeholder="请填写事件详情…"
+                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-colors focus-visible:border-[#007AFF]/40 focus-visible:bg-white focus-visible:outline-none"></textarea>
                         </label>
                     </div>
 
-                    <!-- Card 3: 完成时间 + 事项类别 -->
-                    <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
+                    <!-- Card 2: 完成时间 + 事项类别 -->
+                    <div
+                        class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
                         <!-- 完成时间 -->
                         <button type="button" @click="showCalendar = true"
-                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors hover:bg-slate-50 active:bg-slate-100">
+                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">完成时间<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
-                                <span :class="form.finishedAt ? 'text-slate-800' : 'text-slate-400'">
-                                    {{ form.finishedAt || '请选择' }}
+                                <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
+                                    {{ form.findat || '请选择' }}
                                 </span>
-                                <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 20 20" fill="none">
+                                <svg class="h-3.5 w-3.5 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
                                     <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </span>
                         </button>
 
-                        <div class="mx-4 h-px bg-slate-100"></div>
+                        <div class="mx-4 h-px bg-black/[0.06]"></div>
 
                         <!-- 事项类别 -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
@@ -120,14 +140,14 @@
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.itemType === '加分项' ? 'border-emerald-200 bg-emerald-50 text-emerald-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                    @click="form.itemType = '加分项'">
+                                    :class="form.kpisty === 1 ? 'border-transparent bg-[#34C759] text-white shadow-[0_1px_4px_rgba(52,199,89,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    @click="form.kpisty = 1">
                                     加分项
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.itemType === '减分项' ? 'border-rose-200 bg-rose-50 text-rose-700 shadow-sm' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'"
-                                    @click="form.itemType = '减分项'">
+                                    :class="form.kpisty === -1 ? 'border-transparent bg-[#FF3B30] text-white shadow-[0_1px_4px_rgba(255,59,48,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    @click="form.kpisty = -1">
                                     减分项
                                 </button>
                             </div>
@@ -139,40 +159,31 @@
                 </form>
 
                 <!-- Query Tab -->
-                <div v-else key="query"
-                    class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white shadow-sm">
-                    <SearchBar :contacts="queryPeople" @select="goToPersonList"
-                        @search-query-change="queryKeyword = $event" />
+                <div v-else key="query" class="overflow-hidden rounded-2xl  ">
+                    <SearchBar @select="goToPersonList" />
 
-                    <div class="divide-y divide-slate-100">
-                        <button v-for="person in filteredQueryPeople" :key="person.id" @click="goToPersonList(person)"
-                            class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-blue-50 active:bg-blue-100">
-                            <div
-                                class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white shadow-sm">
-                                {{ person.avatar }}
-                            </div>
-                            <div class="min-w-0 flex-1">
-                                <p class="truncate text-sm font-medium text-slate-900">{{ person.name }}</p>
-                                <p class="truncate text-xs text-slate-500">{{ person.position }}</p>
-                            </div>
-                            <svg class="h-4 w-4 flex-shrink-0 text-slate-400" viewBox="0 0 20 20" fill="none">
-                                <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div v-if="filteredQueryPeople.length === 0"
-                        class="flex flex-col items-center justify-center px-4 py-12 text-center">
+                    <div class="mt-6 px-4">
+                        <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">最近人员</p>
                         <div
-                            class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-300">
-                            <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
-                            </svg>
+                            class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] divide-y divide-black/[0.05]">
+                            <button v-for="person in QueryPeople" :key="person.acct" @click="goToPersonList(person)"
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-black/[0.06]">
+                                <div
+                                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 text-sm font-semibold text-white shadow-sm overflow-hidden">
+                                    <img v-if="person.avatar" :src="person.avatar" :alt="person.usrnam"
+                                        class="h-full w-full object-cover" />
+                                    <span v-else>{{ person.usrnam?.charAt(0) }}</span>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate text-sm font-medium text-slate-900">{{ person.usrnam }}</p>
+                                    <p class="truncate text-xs text-slate-500">{{ person.postnam }}</p>
+                                </div>
+                                <svg class="h-4 w-4 flex-shrink-0 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
+                                    <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
                         </div>
-                        <p class="text-sm font-medium text-slate-600">未找到相关人员</p>
-                        <p class="mt-0.5 text-xs text-slate-400">请尝试其他关键词</p>
                     </div>
                 </div>
             </Transition>
@@ -180,10 +191,10 @@
 
         <!-- Submit Button -->
         <div v-if="activeTab === 'record'"
-            class="fixed inset-x-0 bottom-0 border-t border-slate-200/80 bg-white/95 backdrop-blur-sm">
-            <div class="mx-auto w-full max-w-md px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3">
+            class="fixed inset-x-0 bottom-0 border-t border-black/[0.06] bg-[#F5F6F8]/90 backdrop-blur-xl">
+            <div class="mx-auto w-full max-w-md px-4 py-3">
                 <button type="submit" form="record-form"
-                    class="h-12 w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 text-sm font-semibold text-white shadow-[0_8px_24px_-6px_rgba(37,99,235,0.55)] transition-all active:scale-[0.98] hover:from-blue-700 hover:to-blue-800">
+                    class="h-12 w-full rounded-[14px] bg-[#007AFF] text-[15px] font-semibold tracking-wide text-white shadow-[0_4px_16px_rgba(0,122,255,0.38)] transition-all active:scale-[0.98] active:bg-[#0066D6]">
                     提交
                 </button>
             </div>
@@ -192,11 +203,15 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onActivated, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onActivated, onMounted, reactive, ref, watch } from 'vue'
+
+defineOptions({ name: 'index' })
 import dayjs from 'dayjs'
 import { useContactSelectionStore } from '@/store/contactSelection'
 import { useRoute, useRouter } from 'vue-router'
 import SearchBar from '@/components/SearchBar.vue'
+import http from '@/utils/http'
+import Toast from '@/utils/Toast'
 
 const route = useRoute()
 const router = useRouter()
@@ -235,6 +250,10 @@ const switchTab = (nextTab) => {
     tabDirection.value = tabOrder[nextTab] > tabOrder[activeTab.value] ? 'right' : 'left'
     activeTab.value = nextTab
 
+    if (nextTab === 'query') {
+        fetchQueryPeople()
+    }
+
     router.replace({
         query: {
             ...route.query,
@@ -244,106 +263,84 @@ const switchTab = (nextTab) => {
 }
 
 const form = reactive({
-    contact: '',
-    eventType: '督办',
-    content: '',
-    finishedAt: '',
-    itemType: '加分项',
+    logsty: '1',
+    eventmsg: '',
+    findat: '',
+    kpisty: 1,
 })
 
 const selectedContactsData = ref([])
 const contactSelectionStore = useContactSelectionStore()
 
-const queryPeople = ref([
-    { id: 1, name: '张三', position: '项目经理', avatar: '张' },
-    { id: 2, name: '李四', position: '技术负责人', avatar: '李' },
-    { id: 3, name: '王五', position: '产品总监', avatar: '王' },
-    { id: 4, name: '赵六', position: '设计师', avatar: '赵' },
-    { id: 5, name: '孙七', position: '运营专员', avatar: '孙' },
-    { id: 6, name: '周八', position: '开发工程师', avatar: '周' },
-    { id: 7, name: '吴九', position: '测试工程师', avatar: '吴' },
-    { id: 8, name: '郑十', position: '人力资源', avatar: '郑' },
-])
+const QueryPeople = ref([])
 
-const filteredQueryPeople = computed(() => {
-    const keyword = queryKeyword.value.trim().toLowerCase()
-    if (!keyword) {
-        return queryPeople.value
-    }
-
-    return queryPeople.value.filter(person =>
-        person.name.toLowerCase().includes(keyword)
-        || person.position.toLowerCase().includes(keyword)
-    )
-})
+const fetchQueryPeople = async () => {
+    const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
+    const edat = dayjs().format('YYYY-MM-DD')
+    const response = await http.post('/findmyusers', { qryflg: 4, bdat, edat })
+    console.log('最近人员查询结果：', response)
+    QueryPeople.value = response ?? []
+}
 
 const goToPersonList = (person) => {
+
+    console.log('goToPersonList', person)
+
     router.push({
         path: '/person-list',
         query: {
-            id: String(person.id),
-            name: person.name,
+            acct: person.acct,
+            name: person.usrnam,
             tab: 'query',
         },
     })
 }
 
-const normalizeSelectedContacts = (payload) => {
-    if (Array.isArray(payload)) {
-        return payload
-    }
-
-    // Backward compatibility: old format was comma-separated names
-    if (typeof payload === 'string') {
-        return payload
-            .split(',')
-            .map(name => name.trim())
-            .filter(Boolean)
-            .map((name, index) => ({ id: `legacy-${index}`, name }))
-    }
-
-    return []
-}
-
 const contactDisplayText = computed(() => {
-    if (selectedContactsData.value.length > 0) {
-        return selectedContactsData.value
-            .map(contact => contact?.name)
-            .filter(Boolean)
-            .join(',')
-    }
-
-    return form.contact
+    return selectedContactsData.value
+        .map(contact => contact?.usrnam)
+        .filter(Boolean)
+        .join(',')
 })
 
-const applySelectedContacts = (contacts) => {
-    selectedContactsData.value = contacts
-    form.contact = contacts.map(contact => contact.name).join(',')
-    console.log('11', form.contact)
-}
-
 const syncContactsFromStore = () => {
-    const contacts = normalizeSelectedContacts(contactSelectionStore.selectedContacts)
-    if (contacts.length > 0) {
-        applySelectedContacts(contacts)
+    const contacts = contactSelectionStore.selectedContacts
+    if (Array.isArray(contacts) && contacts.length > 0) {
+        selectedContactsData.value = contacts
     }
 }
 
 const onCalendarConfirm = (date) => {
     const pickedDate = Array.isArray(date) ? date[0] : date
-    form.finishedAt = dayjs(pickedDate).format('YYYY-MM-DD')
+    form.findat = dayjs(pickedDate).format('YYYY-MM-DD')
     showCalendar.value = false
 }
 
-const onSubmit = () => {
-    console.log('submit form:', {
-        ...form,
-        contacts: selectedContactsData.value,
+const resetForm = () => {
+    form.logsty = '1'
+    form.eventmsg = ''
+    form.findat = ''
+    form.kpisty = 1
+    selectedContactsData.value = []
+    contactSelectionStore.clearSelectedContacts()
+}
+
+const onSubmit = async () => {
+    const toUsers = selectedContactsData.value.map(c => c.acct).filter(Boolean).join(',')
+    await http.post('/saveevent', {
+        eventmsg: form.eventmsg,
+        findat: form.findat,
+        kpisty: form.kpisty,
+        logsty: form.logsty,
+        toUsers,
     })
+    Toast.success('提交成功')
+    resetForm()
 }
 
 onMounted(() => {
     syncContactsFromStore()
+    fetchQueryPeople()
 })
 
 onActivated(() => {
