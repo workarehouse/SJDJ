@@ -30,7 +30,7 @@ const Toast = {
         } else {
             showToast('error', input)
         }
-    }
+    },
 }
 
 const showToast = (type: ToastType, { message, delay = 3000 }: ToastOptions) => {

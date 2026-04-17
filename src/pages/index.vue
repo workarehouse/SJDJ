@@ -36,7 +36,7 @@
                 :leave-to-class="tabDirection === 'right' ? '-translate-x-6 opacity-0' : 'translate-x-6 opacity-0'">
 
                 <!-- Record Form -->
-                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-3 mx-3  "
+                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-2 mx-3  "
                     @submit.prevent="onSubmit">
 
                     <!-- Card 1: 事件人员 + 事件分类 -->
@@ -82,19 +82,31 @@
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事件分类<span
                                     class="ml-0.5 text-rose-500">*</span></span>
-                            <div class="ml-auto flex items-center gap-2">
-                                <button type="button"
-                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.logsty === '1' ? 'border-transparent bg-[#267EF0] text-white shadow-[0_1px_4px_rgba(38,126,240,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
-                                    @click="form.logsty = '1'">
-                                    督办
-                                </button>
-                                <button type="button"
-                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.logsty === '2' ? 'border-transparent bg-[#267EF0] text-white shadow-[0_1px_4px_rgba(38,126,240,0.35)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
-                                    @click="form.logsty = '2'">
-                                    记事
-                                </button>
+                            <div class="ml-auto flex items-center gap-4">
+                                <!-- 督办 -->
+                                <label class="flex cursor-pointer items-center gap-1.5">
+                                    <span
+                                        class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150"
+                                        :class="form.logsty === '1' ? 'border-[#267EF0]' : 'border-slate-300'">
+                                        <span v-if="form.logsty === '1'"
+                                            class="h-2 w-2 rounded-full bg-[#267EF0]"></span>
+                                    </span>
+                                    <input type="radio" v-model="form.logsty" value="1" class="sr-only" />
+                                    <span class="text-sm"
+                                        :class="form.logsty === '1' ? 'font-medium text-slate-800' : 'text-slate-500'">督办</span>
+                                </label>
+                                <!-- 记事 -->
+                                <label class="flex cursor-pointer items-center gap-1.5">
+                                    <span
+                                        class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150"
+                                        :class="form.logsty === '2' ? 'border-[#267EF0]' : 'border-slate-300'">
+                                        <span v-if="form.logsty === '2'"
+                                            class="h-2 w-2 rounded-full bg-[#267EF0]"></span>
+                                    </span>
+                                    <input type="radio" v-model="form.logsty" value="2" class="sr-only" />
+                                    <span class="text-sm"
+                                        :class="form.logsty === '2' ? 'font-medium text-slate-800' : 'text-slate-500'">记事</span>
+                                </label>
                             </div>
                         </div>
 
@@ -111,11 +123,11 @@
                         </label>
                     </div>
 
-                    <!-- Card 2: 完成时间 + 事项类别 -->
+                    <!-- Card 2: 完成时间（督办）/ 事项类别（记事） -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- 完成时间 -->
-                        <button type="button" @click="showCalendar = true"
+                        <!-- 完成时间：仅督办显示 -->
+                        <button v-if="form.logsty === '1'" type="button" @click="showCalendar = true"
                             class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">完成时间<span
                                     class="ml-0.5 text-rose-500">*</span></span>
@@ -130,10 +142,8 @@
                             </span>
                         </button>
 
-                        <div class="mx-4 h-px bg-black/[0.06]"></div>
-
-                        <!-- 事项类别 -->
-                        <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
+                        <!-- 事项类别：仅记事显示 -->
+                        <div v-if="form.logsty === '2'" class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事项类别<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-2">
@@ -159,9 +169,20 @@
 
                 <!-- Query Tab -->
                 <div v-else key="query" class="overflow-hidden rounded-2xl  ">
-                    <SearchBar @select="goToPersonList" />
+                    <!-- 搜索占位栏 -->
+                    <div class="px-3 pt-4">
+                        <button type="button" @click="router.push('/search')"
+                            class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-50 bg-white px-3 py-1.5 text-slate-500 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors active:bg-slate-50">
+                            <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none">
+                                <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5" />
+                                <path d="M14 14L17.5 17.5" stroke="currentColor" stroke-width="1.5"
+                                    stroke-linecap="round" />
+                            </svg>
+                            <span class="text-sm">搜索人员</span>
+                        </button>
+                    </div>
 
-                    <div class="mt-6 px-4">
+                    <div class="mt-4 px-4">
                         <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">最近人员</p>
                         <div
                             class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] divide-y divide-black/[0.05]">
@@ -199,7 +220,7 @@
                         </svg>
                         提交中…
                     </span>
-                    <span v-else>提交</span>
+                    <span v-else>创建</span>
                 </button>
             </div>
         </div>
@@ -344,7 +365,7 @@ const onSubmit = async () => {
             logsty: form.logsty,
             toUsers,
         })
-        Toast.success('提交成功')
+        Toast.success('创建成功')
         resetForm()
     } finally {
         isSubmitting.value = false

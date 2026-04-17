@@ -113,8 +113,8 @@
             </div>
         </div>
 
-        <!-- 确认按钮：普通底部元素，不再 fixed -->
-        <div class="border-t border-slate-100 bg-white">
+        <!-- 确认按钮：搜索模式下隐藏 -->
+        <div v-if="!isSearching" class="border-t border-slate-100 z-0 bg-white">
             <div class="mx-auto w-full max-w-md px-4 pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
                 <button @click="confirmSelection"
                     class="h-11 w-full rounded-lg bg-[#267EF0] text-sm font-medium text-white shadow-[0_10px_20px_-12px_rgba(38,126,240,0.65)] transition-all duration-150 hover:bg-[#1a6ad4] active:scale-[0.98] active:shadow-none disabled:cursor-not-allowed disabled:opacity-50"
@@ -155,7 +155,7 @@ const fetchContacts = async () => {
     try {
         const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
         const edat = dayjs().format('YYYY-MM-DD')
-        const response = await http.post('/findmyusers', { qryflg: 2, bdat, edat })
+        const response = await http.post('/findmyusers', { qryflg: 1, bdat, edat })
         contacts.value = response ?? []
     } finally {
         isLoading.value = false
@@ -179,11 +179,8 @@ const toggleContact = (contact) => {
     }
 }
 
-// Handle search result selection
+// Handle search result selection：仅加入已选中，不插入下属列表
 const handleSearchSelect = (contact) => {
-    if (!contacts.value.some(c => c.acct === contact.acct)) {
-        contacts.value.unshift(contact)
-    }
     if (!isSelected(contact.acct)) {
         selectedContacts.value.push(contact)
     }

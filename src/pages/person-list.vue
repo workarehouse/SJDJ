@@ -12,7 +12,7 @@
                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                             clip-rule="evenodd" />
                     </svg>
-                    <input v-model="keyword" type="text" placeholder="关键字搜素…"
+                    <input v-model="keyword" type="text" placeholder="关键字搜索…"
                         class="w-full cursor-text rounded-lg border border-slate-200 bg-slate-50 py-2 pl-9 pr-8 text-xs text-slate-800 placeholder-slate-400 outline-none transition-all duration-200 focus:border-[#267EF0]/40 focus:bg-white focus:ring-2 focus:ring-[#267EF0]/10"
                         @input="onKeywordInput" />
                     <button v-if="keyword" type="button" @click="clearKeyword"
@@ -93,8 +93,8 @@
                         <span v-if="item.logsty === '1'" class="text-[10px] text-slate-300">
                             / {{ item.state === 'C' ? '进行中' : '已作废' }}
                         </span>
-                        <!-- kpi：最弱，纯文字提示 -->
-                        <span v-if="item.kpistytxt" class="ml-auto text-[10px] text-slate-400">
+                        <!-- kpi：仅记事显示 -->
+                        <span v-if="item.logsty === '2' && item.kpistytxt" class="ml-auto text-[10px] text-slate-400">
                             {{ item.kpistytxt }}
                         </span>
                     </div>
