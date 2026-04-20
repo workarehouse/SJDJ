@@ -166,10 +166,6 @@ const isSelected = (acct) => {
     return selectedContacts.value.some(contact => contact.acct === acct)
 }
 
-const unselectedContacts = computed(() =>
-    contacts.value.filter(c => !isSelected(c.acct))
-)
-
 const toggleContact = (contact) => {
     const index = selectedContacts.value.findIndex(c => c.acct === contact.acct)
     if (index > -1) {

@@ -123,13 +123,13 @@
                         </label>
                     </div>
 
-                    <!-- Card 2: 完成时间（督办）/ 事项类别（记事） -->
+                    <!-- Card 2: 计划完成时间（督办）/ 事项类别（记事） -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- 完成时间：仅督办显示 -->
+                        <!-- 计划完成时间：仅督办显示 -->
                         <button v-if="form.logsty === '1'" type="button" @click="showCalendar = true"
                             class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">完成时间<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">计划完成时间<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
                                 <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
@@ -234,7 +234,6 @@ defineOptions({ name: 'index' })
 import dayjs from 'dayjs'
 import { useContactSelectionStore } from '@/store/contactSelection'
 import { useRoute, useRouter } from 'vue-router'
-import SearchBar from '@/components/SearchBar.vue'
 import http from '@/utils/http'
 import Toast from '@/utils/Toast'
 import defaultAvatar from '@/assets/default-avatar.svg'
@@ -249,10 +248,7 @@ const initialTab = route.query.tab === 'query' || route.query.tab === 'record'
 const activeTab = ref(initialTab)
 const tabDirection = ref('right')
 const showCalendar = ref(false)
-const queryKeyword = ref('')
 const isRestoringTab = ref(false)
-
-const todayStr = computed(() => dayjs().format('YYYY年M月D日'))
 
 const tabOrder = {
     record: 0,
@@ -292,7 +288,7 @@ const form = reactive({
     logsty: '1',
     eventmsg: '',
     findat: '',
-    kpisty: 1,
+    kpisty: null, // 明确选择后才有值，用于必填校验
 })
 
 const selectedContactsData = ref([])
@@ -346,7 +342,7 @@ const resetForm = () => {
     form.logsty = '1'
     form.eventmsg = ''
     form.findat = ''
-    form.kpisty = 1
+    form.kpisty = null
     selectedContactsData.value = []
     contactSelectionStore.clearSelectedContacts()
 }
@@ -355,6 +351,27 @@ const isSubmitting = ref(false)
 
 const onSubmit = async () => {
     if (isSubmitting.value) return
+
+    // 基础必填校验
+    if (!selectedContactsData.value.length) {
+        Toast.fail('请选择事件人员')
+        return
+    }
+    if (!form.eventmsg.trim()) {
+        Toast.fail('请填写事件内容')
+        return
+    }
+    // 督办：计划完成时间必填
+    if (form.logsty === '1' && !form.findat) {
+        Toast.fail('请选择计划完成时间')
+        return
+    }
+    // 记事：事项类别必填（kpisty 默认为 1，但若未主动选择则为 null）
+    if (form.logsty === '2' && form.kpisty === null) {
+        Toast.fail('请选择事项类别')
+        return
+    }
+
     isSubmitting.value = true
     try {
         const toUsers = selectedContactsData.value.map(c => c.acct).filter(Boolean).join(',')
@@ -384,6 +401,12 @@ onActivated(() => {
 
 watch(() => route.query.tab, () => {
     syncTabFromRoute()
+})
+
+// 切换分类时重置联动字段
+watch(() => form.logsty, () => {
+    form.findat = ''
+    form.kpisty = null
 })
 </script>
 

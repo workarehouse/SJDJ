@@ -34,7 +34,7 @@
 
         <Transition enter-active-class="animate-in fade-in slide-in-from-top-2 duration-200"
             leave-active-class="animate-out fade-out slide-out-to-top-2 duration-150">
-            <div v-if="isSearching && searchQuery.trim()" class="absolute left-0 right-0 z-50 bg-white">
+            <div v-if="isSearching && searchQuery.trim()" class="absolute left-0 right-0 z-50 bg-white mt-1">
                 <div class="h-[calc(100vh-3.5rem)] overflow-y-auto bg-white">
                     <div class="divide-y divide-slate-200">
                         <button v-for="contact in searchResults" :key="contact.id" @click="selectResult(contact)"

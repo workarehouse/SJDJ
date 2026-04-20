@@ -110,7 +110,7 @@
                                     <p class="mt-0.5 text-xs  text-slate-700">{{ item.credat }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">完成日期</p>
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">计划完成日期</p>
                                     <p class="mt-0.5 text-xs  text-slate-700">{{ item.findat }}</p>
                                 </div>
                             </div>
