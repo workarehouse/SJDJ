@@ -216,6 +216,6 @@ onActivated(() => {
 
 <route lang="yaml">
 meta:
-    title: 选择事件人员
+    title: 选择人员
     layout: Default
 </route>

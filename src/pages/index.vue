@@ -39,13 +39,13 @@
                 <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-2 mx-3  "
                     @submit.prevent="onSubmit">
 
-                    <!-- Card 1: 事件人员 + 事件分类 -->
+                    <!-- Card 1: 人员 + 分类 -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- 事件人员 -->
+                        <!-- 人员 -->
                         <RouterLink to="/contacts"
                             class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事件人员<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">人员<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1.5">
                                 <!-- 未选择 -->
@@ -78,9 +78,9 @@
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!-- 事件分类 -->
+                        <!-- 分类 -->
                         <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事件分类<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">分类<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-4">
                                 <!-- 督办 -->
@@ -95,7 +95,7 @@
                                     <span class="text-sm"
                                         :class="form.logsty === '1' ? 'font-medium text-slate-800' : 'text-slate-500'">督办</span>
                                 </label>
-                                <!-- 记事 -->
+                                <!-- 备忘录 -->
                                 <label class="flex cursor-pointer items-center gap-1.5">
                                     <span
                                         class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 transition-all duration-150"
@@ -105,17 +105,17 @@
                                     </span>
                                     <input type="radio" v-model="form.logsty" value="2" class="sr-only" />
                                     <span class="text-sm"
-                                        :class="form.logsty === '2' ? 'font-medium text-slate-800' : 'text-slate-500'">记事</span>
+                                        :class="form.logsty === '2' ? 'font-medium text-slate-800' : 'text-slate-500'">备忘录</span>
                                 </label>
                             </div>
                         </div>
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
-                        <!-- 事件内容 -->
+                        <!-- 内容 -->
                         <label class="block px-4 pb-3 pt-3">
                             <div class="mb-2">
-                                <span class="text-sm font-medium text-slate-700">事件内容<span
+                                <span class="text-sm font-medium text-slate-700">内容<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
                             <textarea v-model="form.eventmsg" rows="4" placeholder="请填写事件详情…"
@@ -123,7 +123,7 @@
                         </label>
                     </div>
 
-                    <!-- Card 2: 计划完成时间（督办）/ 事项类别（记事） -->
+                    <!-- Card 2: 计划完成时间（督办）/ 类别（备忘录） -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
                         <!-- 计划完成时间：仅督办显示 -->
@@ -142,9 +142,9 @@
                             </span>
                         </button>
 
-                        <!-- 事项类别：仅记事显示 -->
+                        <!-- 类别：仅备忘录显示 -->
                         <div v-if="form.logsty === '2'" class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">事项类别<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">类别<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <div class="ml-auto flex items-center gap-2">
                                 <button type="button"
@@ -298,7 +298,7 @@ const QueryPeople = ref([])
 
 const fetchQueryPeople = async () => {
     const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
-    const edat = dayjs().format('YYYY-MM-DD')
+    const edat = dayjs().add(1, 'day').format('YYYY-MM-DD')
     const response = await http.post('/findmyusers', { qryflg: 4, bdat, edat })
     console.log('最近人员查询结果：', response)
     QueryPeople.value = response ?? []
@@ -313,6 +313,8 @@ const goToPersonList = (person) => {
         query: {
             acct: person.acct,
             name: person.usrnam,
+            post: person.postnam ?? '',
+            avatar: person.avatar ?? '',
             tab: 'query',
         },
     })
@@ -354,11 +356,11 @@ const onSubmit = async () => {
 
     // 基础必填校验
     if (!selectedContactsData.value.length) {
-        Toast.fail('请选择事件人员')
+        Toast.fail('请选择人员')
         return
     }
     if (!form.eventmsg.trim()) {
-        Toast.fail('请填写事件内容')
+        Toast.fail('请填写内容')
         return
     }
     // 督办：计划完成时间必填
@@ -366,9 +368,9 @@ const onSubmit = async () => {
         Toast.fail('请选择计划完成时间')
         return
     }
-    // 记事：事项类别必填（kpisty 默认为 1，但若未主动选择则为 null）
+    // 备忘录：类别必填（kpisty 默认为 1，但若未主动选择则为 null）
     if (form.logsty === '2' && form.kpisty === null) {
-        Toast.fail('请选择事项类别')
+        Toast.fail('请选择类别')
         return
     }
 

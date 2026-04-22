@@ -235,6 +235,8 @@ const goToPersonList = (person) => {
         query: {
             acct: person.acct,
             name: person.usrnam,
+            post: person.postnam ?? '',
+            avatar: person.avatar ?? '',
         },
     })
 }
