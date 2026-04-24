@@ -121,7 +121,8 @@
         <!-- Records -->
         <div class="mx-auto w-full max-w-md px-4 pt-4 space-y-3">
             <article v-for="item in filteredPersonRecords" :key="item.id"
-                class="overflow-hidden rounded-xl bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.08)]">
+                class="cursor-pointer overflow-hidden rounded-xl bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.08)]"
+                @click="onGoBPM(item.id)">
 
                 <!-- Card Body -->
                 <div class="px-4 pt-3 pb-3.5">
@@ -195,6 +196,7 @@ import { computed, nextTick, onMounted, ref } from 'vue'
 import dayjs from 'dayjs'
 import { useRoute } from 'vue-router'
 import http from '@/utils/http'
+import Toast from '@/utils/Toast'
 
 const route = useRoute()
 
@@ -226,6 +228,7 @@ const activeType = ref('all')
 const personRecords = ref([])
 const keyword = ref('')
 let searchTimer = null
+const openingBpmId = ref('')
 
 const fetchRecords = async () => {
     const [bdat, edat] = selectedDateRange.value.length === 2
@@ -308,6 +311,29 @@ const onDateConfirm = (value) => {
 const clearDateFilter = () => {
     selectedDateRange.value = []
     fetchRecords()
+}
+
+const resolveBpmUrl = (result) => {
+    if (typeof result === 'string') return result
+    if (!result || typeof result !== 'object') return ''
+    return result.url || result.link || result.href || result.bpmurl || result.procurl || ''
+}
+
+const onGoBPM = async (id) => {
+    const resolvedId = id ? String(id) : ''
+    try {
+        const result = await http.post('/getsuptskprocurl', { id: resolvedId })
+        const targetUrl = resolveBpmUrl(result)
+        if (!targetUrl) {
+            Toast.info('未获取到跳转地址')
+            return
+        }
+        window.location.href = targetUrl
+    } catch (error) {
+        Toast.error('获取跳转地址失败，请稍后重试')
+    } finally {
+        openingBpmId.value = ''
+    }
 }
 
 onMounted(() => {

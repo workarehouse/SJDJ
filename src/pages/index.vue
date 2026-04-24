@@ -123,13 +123,13 @@
                         </label>
                     </div>
 
-                    <!-- Card 2: 计划完成时间（督办）/ 类别（备忘录） -->
+                    <!-- Card 2: 要求完成时间（督办）/ 类别（备忘录） -->
                     <div
                         class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
-                        <!-- 计划完成时间：仅督办显示 -->
+                        <!-- 要求完成时间：仅督办显示 -->
                         <button v-if="form.logsty === '1'" type="button" @click="showCalendar = true"
                             class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">计划完成时间<span
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">要求完成时间<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
                                 <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
@@ -151,13 +151,13 @@
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                     :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.kpisty = 1">
-                                    加分项
+                                    正向事项
                                 </button>
                                 <button type="button"
                                     class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                     :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                     @click="form.kpisty = -1">
-                                    减分项
+                                    负向事项
                                 </button>
                             </div>
                         </div>
@@ -363,9 +363,9 @@ const onSubmit = async () => {
         Toast.fail('请填写内容')
         return
     }
-    // 督办：计划完成时间必填
+    // 督办：要求完成时间必填
     if (form.logsty === '1' && !form.findat) {
-        Toast.fail('请选择计划完成时间')
+        Toast.fail('请选择要求完成时间')
         return
     }
     // 备忘录：类别必填（kpisty 默认为 1，但若未主动选择则为 null）
