@@ -153,7 +153,7 @@
                             <div class="grid grid-cols-2 gap-x-4 gap-y-1">
                                 <div>
                                     <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">下达日期</p>
-                                    <p class="mt-0.5 text-xs  text-slate-700">{{ item.credat }}</p>
+                                    <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
                                 </div>
                                 <div>
                                     <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">计划完成日期</p>
@@ -164,7 +164,7 @@
                         <template v-else>
                             <div>
                                 <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">记录时间</p>
-                                <p class="mt-0.5 text-xs  text-slate-700">{{ item.credat }}</p>
+                                <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
                             </div>
                         </template>
                     </div>
@@ -296,6 +296,15 @@ const activeTypeIndex = computed(() => {
     if (activeType.value === '1') return 1
     return 2
 })
+
+const formatDateTime = (value) => {
+    if (!value) return ''
+    const date = dayjs(value)
+    if (date.isValid()) {
+        return date.format('YYYY-MM-DD HH:mm')
+    }
+    return String(value).replace(/:(\d{2})(?=\s*$)/, '')
+}
 
 const recordCount = computed(() => personRecords.value.length)
 const superviseCount = computed(() => personRecords.value.filter(i => i.logsty === '1').length)

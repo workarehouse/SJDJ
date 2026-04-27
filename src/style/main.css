@@ -6,6 +6,8 @@ html,
 body,
 #app {
     @apply h-full;
+    /* 禁用 iOS 上的弹性滚动效果 */
+    overscroll-behavior: none;
 }
 
 html {
