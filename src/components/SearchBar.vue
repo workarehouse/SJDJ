@@ -107,7 +107,7 @@ const mapSearchUser = (item) => {
 }
 
 const searchFn = async (keyword) => {
-    const response = await http.post('/searchusers', { keyword })
+    const response = await http.post('/qw/searchusers', { keyword })
     const result = response ?? []
     return result.map(mapSearchUser)
 }

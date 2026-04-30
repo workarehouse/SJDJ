@@ -49,7 +49,7 @@ function handleErrorCode(code: number, msg: string = 'An error occurred') {
             console.error('Unauthorized: Please log in.')
             // 登录失效，跳转到统一登录页（仅生产环境）
             if (import.meta.env.MODE !== 'development') {
-                window.location.href = 'https://devenv.luoniushan.com/eventapi/event/qwauth/login'
+                window.location.href = `${import.meta.env.VITE_API_BASE_URL}/qwauth/login`
             }
             break
         case 500:

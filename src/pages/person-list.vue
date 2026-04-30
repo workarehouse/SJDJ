@@ -119,33 +119,55 @@
         </div>
 
         <!-- Records -->
-        <div class="mx-auto w-full max-w-md px-4 pt-4 space-y-3">
+        <div class="mx-auto w-full max-w-md px-3 pt-4 space-y-3">
             <article v-for="item in filteredPersonRecords" :key="item.id"
                 class="cursor-pointer overflow-hidden rounded-xl bg-white shadow-[0_1px_3px_0_rgba(0,0,0,0.08)]"
-                @click="onGoBPM(item.id)">
+                @click="onRecordClick(item)">
 
                 <!-- Card Body -->
                 <div class="px-4 pt-3 pb-3.5">
                     <!-- 类型行 -->
                     <div class="mb-2.5 flex items-center gap-2">
                         <!-- 类型：iOS SF Symbol 风格胶囊，纯色填充 + 系统字重 -->
-                        <span
-                            class="inline-flex items-center gap-1 rounded-full px-2.5 py-[3px] text-[11px] font-semibold"
-                            :class="item.logsty === '1' ? 'bg-[#267EF0]/10 text-[#267EF0]' : 'bg-[#8E8E93]/10 text-[#8E8E93]'"
+                        <span class="inline-flex items-center gap-1 py-[3px] text-[12px] font-semibold"
+                            :class="item.logsty === '1' ? 'text-[#267EF0]' : 'text-[#8E8E93]'"
                             style="-webkit-font-smoothing: antialiased; letter-spacing: -0.1px;">
                             {{ item.logstytxt }}
                         </span>
-                        <!-- 进行中/已作废：极弱，斜杠前缀纯文字 -->
-                        <span v-if="item.logsty === '1'" class="text-[10px] text-slate-300">
-                            / {{ item.state === 'C' ? '进行中' : '已作废' }}
+                        <!-- 状态：极弱，斜杠前缀纯文字 -->
+                        <span v-if="item.logsty === '1'" class="text-[11px] text-slate-300">
+                            / {{ getStateText(item.state) }}
                         </span>
+
+                        <button v-if="item.logsty == 1 && item.state == 'C'" @click="onCreteBPM(item)"
+                            :disabled="bpmLoadingId === item.id"
+                            class="ml-auto rounded-md bg-[#267EF0] px-3 py-1 text-xs font-semibold text-white shadow-sm transition-all duration-150 active:scale-95 active:bg-[#1a6ad4] focus:outline-none focus:ring-2 focus:ring-[#267EF0]/30 focus:ring-offset-1 disabled:opacity-60 disabled:active:scale-100 flex items-center gap-1">
+                            <svg v-if="bpmLoadingId === item.id" class="h-4 w-4 animate-spin" viewBox="0 0 24 24"
+                                fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="3" />
+                                <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                            </svg>
+                            <span>发起</span>
+                        </button>
                         <!-- kpi：仅备忘录显示 -->
-                        <span v-if="item.logsty === '2' && item.kpistytxt" class="ml-auto text-[10px] text-slate-400">
+                        <span v-if="item.logsty === '2' && item.kpistytxt" class="ml-auto text-[11px] text-slate-400">
                             {{ item.kpistytxt }}
                         </span>
                     </div>
                     <!-- 内容 -->
-                    <p class="text-sm leading-relaxed text-slate-800">{{ item.eventmsg }}</p>
+                    <p class="text-sm leading-relaxed text-slate-800 mb-0 inline">
+                        {{ item.eventmsg }}
+                        <button v-if="item.logsty == 1 && item.state == 'B'" @click.stop="onGoBPM(item)"
+                            class="align-baseline inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#267EF0] transition-all duration-150 hover:bg-[#267EF0]/10 active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#267EF0]/30 focus:ring-offset-1 ml-1"
+                            style="letter-spacing: 0.02em;">
+                            查看流程
+                            <svg class="h-3.5 w-3 text-[#267EF0]" fill="none" stroke="currentColor" stroke-width="2"
+                                viewBox="0 0 20 20">
+                                <path d="M7 4l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                        </button>
+                    </p>
 
                     <!-- 日期信息 -->
                     <div class="mt-3 border-t border-slate-100 pt-2.5">
@@ -199,6 +221,7 @@ import http from '@/utils/http'
 import Toast from '@/utils/Toast'
 
 const route = useRoute()
+const router = useRouter()
 
 const personName = computed(() => {
     const name = route.query.name
@@ -220,6 +243,20 @@ const avatarLoadError = ref(false)
 
 const personInitial = computed(() => personName.value.charAt(0))
 
+// 状态文本处理
+function getStateText(state) {
+    switch (state) {
+        case 'C':
+            return '未发起'
+        case 'B':
+            return '进行中'
+        case 'X':
+            return '作废'
+        default:
+            return state || ''
+    }
+}
+
 const showDatePicker = ref(false)
 const showSearch = ref(false)
 const searchInputRef = ref(null)
@@ -237,7 +274,7 @@ const fetchRecords = async () => {
             selectedDateRange.value[1] + ' 23:59:59',
         ]
         : ['', '']
-    const result = await http.post('/searchevents', {
+    const result = await http.post('/qw/searchevents', {
         acct: route.query.acct ?? '',
         bdat,
         edat,
@@ -322,27 +359,45 @@ const clearDateFilter = () => {
     fetchRecords()
 }
 
-const resolveBpmUrl = (result) => {
-    if (typeof result === 'string') return result
-    if (!result || typeof result !== 'object') return ''
-    return result.url || result.link || result.href || result.bpmurl || result.procurl || ''
-}
-
-const onGoBPM = async (id) => {
-    const resolvedId = id ? String(id) : ''
+const onGoBPM = async (item) => {
     try {
-        const result = await http.post('/getsuptskprocurl', { id: resolvedId })
-        const targetUrl = resolveBpmUrl(result)
-        if (!targetUrl) {
+        const result = await http.post('/qw/getsuptskprocurl', { id: item.id })
+
+        if (!result) {
             Toast.info('未获取到跳转地址')
             return
         }
-        window.location.href = targetUrl
+        window.location.href = result
     } catch (error) {
         Toast.error('获取跳转地址失败，请稍后重试')
     } finally {
         openingBpmId.value = ''
     }
+}
+
+// 记录点击处理，支持 logsty === -1 跳转编辑
+const onRecordClick = (item) => {
+    if (item.logsty == 2) {
+        // 直接传递完整 item 数据，避免 memo-edit 再次请求
+        router.push({ path: '/memo-edit', query: { id: item.id, data: encodeURIComponent(JSON.stringify(item)) } })
+    }
+}
+
+// 发起流程
+const bpmLoadingId = ref('')
+const onCreteBPM = (item) => {
+    if (!item || !item.id || bpmLoadingId.value === item.id) return
+    bpmLoadingId.value = item.id
+    http.post('/qw/createsuptskpro', { id: item.id })
+        .then(result => {
+            fetchRecords() // 刷新列表状态
+        })
+        .catch(() => {
+            Toast.error('发起流程失败，请稍后重试')
+        })
+        .finally(() => {
+            bpmLoadingId.value = ''
+        })
 }
 
 onMounted(() => {

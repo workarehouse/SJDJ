@@ -211,7 +211,7 @@
         <!-- Submit Button -->
         <div v-if="activeTab === 'record'" class="fixed inset-x-0 bottom-0 bg-[#F5F6F7]/90 backdrop-blur-xl">
             <div class="mx-auto w-full max-w-md px-4 pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-                <button type="submit" form="record-form" :disabled="isSubmitting"
+                <button type="submit" form="record-form" :disabled="isSubmitting || submitSuccess"
                     class="h-12 w-full rounded-[14px] bg-[#267EF0] text-[15px] font-semibold tracking-wide text-white shadow-[0_4px_16px_rgba(38,126,240,0.38)] transition-all active:scale-[0.98] active:bg-[#1a6ad4] disabled:opacity-60 disabled:active:scale-100">
                     <span v-if="isSubmitting" class="flex items-center justify-center gap-2">
                         <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
@@ -219,6 +219,14 @@
                             <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                         </svg>
                         提交中…
+                    </span>
+                    <span v-else-if="submitSuccess" class="flex items-center justify-center gap-2">
+                        <!-- 打勾图标 -->
+                        <svg class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="none">
+                            <path d="M5 10.5L9 14.5L15 7.5" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        提交成功
                     </span>
                     <span v-else>创建</span>
                 </button>
@@ -299,7 +307,7 @@ const QueryPeople = ref([])
 const fetchQueryPeople = async () => {
     const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
     const edat = dayjs().add(1, 'day').format('YYYY-MM-DD')
-    const response = await http.post('/findmyusers', { qryflg: 4, bdat, edat })
+    const response = await http.post('/qw/findmyusers', { qryflg: 4, bdat, edat })
     console.log('最近人员查询结果：', response)
     QueryPeople.value = response ?? []
 }
@@ -350,9 +358,10 @@ const resetForm = () => {
 }
 
 const isSubmitting = ref(false)
+const submitSuccess = ref(false)
 
 const onSubmit = async () => {
-    if (isSubmitting.value) return
+    if (isSubmitting.value || submitSuccess.value) return
 
     // 基础必填校验
     if (!selectedContactsData.value.length) {
@@ -377,15 +386,18 @@ const onSubmit = async () => {
     isSubmitting.value = true
     try {
         const toUsers = selectedContactsData.value.map(c => c.acct).filter(Boolean).join(',')
-        await http.post('/saveevent', {
+        await http.post('/qw/saveevent', {
             eventmsg: form.eventmsg,
             findat: form.findat,
             kpisty: form.kpisty,
             logsty: form.logsty,
             toUsers,
         })
-        Toast.success('创建成功')
-        resetForm()
+        submitSuccess.value = true
+        setTimeout(() => {
+            submitSuccess.value = false
+            resetForm()
+        }, 1000)
     } finally {
         isSubmitting.value = false
     }

@@ -155,7 +155,7 @@ const fetchContacts = async () => {
     try {
         const bdat = dayjs().subtract(1, 'month').format('YYYY-MM-DD')
         const edat = dayjs().format('YYYY-MM-DD')
-        const response = await http.post('/findmyusers', { qryflg: 1, bdat, edat })
+        const response = await http.post('/qw/findmyusers', { qryflg: 1, bdat, edat })
         contacts.value = response ?? []
     } finally {
         isLoading.value = false

@@ -220,7 +220,7 @@ const doSearch = async () => {
     if (!kw) return
     isLoading.value = true
     try {
-        const response = await http.post('/searchusers', { keyword: kw })
+        const response = await http.post('/qw/searchusers', { keyword: kw })
         results.value = response ?? []
         if (results.value.length) saveHistory(kw)
     } finally {
