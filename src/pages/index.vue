@@ -143,22 +143,37 @@
                         </button>
 
                         <!-- 类别：仅备忘录显示 -->
-                        <div v-if="form.logsty === '2'" class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">类别<span
-                                    class="ml-0.5 text-rose-500">*</span></span>
-                            <div class="ml-auto flex items-center gap-2">
-                                <button type="button"
-                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
-                                    @click="form.kpisty = 1">
-                                    正向事项
-                                </button>
-                                <button type="button"
-                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                    :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
-                                    @click="form.kpisty = -1">
-                                    负向事项
-                                </button>
+                        <div v-if="form.logsty === '2'" class="px-4 py-2.5">
+                            <div class="flex min-h-[52px] items-center gap-3">
+                                <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">类别<span
+                                        class="ml-0.5 text-rose-500">*</span></span>
+                                <div class="ml-auto flex items-center gap-2">
+                                    <button type="button"
+                                        class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                        :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                        @click="form.kpisty = 1">
+                                        正向事项
+                                    </button>
+                                    <button type="button"
+                                        class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                        :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                        @click="form.kpisty = -1">
+                                        负向事项
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- 选择后显示具体事项下拉（另起一行） -->
+                            <div v-if="form.kpisty !== null" class="mt-2 px-0">
+                                <select v-model="form.kpiselect"
+                                    class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                                    <option value="">请选择具体事项</option>
+                                    <option v-for="opt in form.kpisty === 1 ? positiveOptions : negativeOptions"
+                                        :key="opt" :value="opt">{{ opt }}</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                                <input v-if="form.kpiselect === '其他'" v-model="form.kpiselectOther" type="text"
+                                    placeholder="请填写其他事项"
+                                    class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                             </div>
                         </div>
                     </div>
@@ -297,7 +312,32 @@ const form = reactive({
     eventmsg: '',
     findat: '',
     kpisty: null, // 明确选择后才有值，用于必填校验
+    kpiselect: '', // 具体事项下拉选择
+    kpiselectOther: '', // 选择其他时的文本
 })
+
+// 正向 / 负向事项列表
+const positiveOptions = [
+    '主动推进工作，无需上级督促盯办',
+    '主动担当补位，发现问题自主闭环整改',
+    '可独立搭建完整工作框架、落地方案',
+    '统筹分工有序，跨岗位协同衔接顺畅，无协作内耗',
+    '严守制度流程，全流程合规作业，无越线违规行为',
+    '具备建立、优化工作流程、标准能力',
+    '承接指令不打折扣，按期保质完成闭环交付',
+    '过程主动同步进度，攻坚急事主动兜底担当',
+]
+
+const negativeOptions = [
+    '工作被动等待，不催不动，缺乏自主担当',
+    '遇事推诿甩锅，不主动整改工作问题',
+    '缺乏全局思路，方案逻辑杂乱，无法落地使用',
+    '统筹排布无序，工作节奏混乱，易返工、易扯皮',
+    '无视标准流程，随意简化环节，凭个人经验办事',
+    '不具备或抵触建立、优化工作流程、标准化工作',
+    '选择性落实工作，拖延应付，常态化交付滞后',
+    '履职敷衍无闭环，成果质量差，频繁返工整改',
+]
 
 const selectedContactsData = ref([])
 const contactSelectionStore = useContactSelectionStore()
@@ -353,6 +393,8 @@ const resetForm = () => {
     form.eventmsg = ''
     form.findat = ''
     form.kpisty = null
+    form.kpiselect = ''
+    form.kpiselectOther = ''
     selectedContactsData.value = []
     contactSelectionStore.clearSelectedContacts()
 }
@@ -365,22 +407,33 @@ const onSubmit = async () => {
 
     // 基础必填校验
     if (!selectedContactsData.value.length) {
-        Toast.fail('请选择人员')
+        Toast.info('请选择人员')
         return
     }
     if (!form.eventmsg.trim()) {
-        Toast.fail('请填写内容')
+        Toast.info('请填写内容')
         return
     }
     // 督办：要求完成时间必填
     if (form.logsty === '1' && !form.findat) {
-        Toast.fail('请选择要求完成时间')
+        Toast.info('请选择要求完成时间')
         return
     }
     // 备忘录：类别必填（kpisty 默认为 1，但若未主动选择则为 null）
     if (form.logsty === '2' && form.kpisty === null) {
-        Toast.fail('请选择类别')
+        Toast.info('请选择类别')
         return
+    }
+    // 备忘录：已选择类别后须选择具体事项或填写其他
+    if (form.logsty === '2' && form.kpisty !== null) {
+        if (!form.kpiselect) {
+            Toast.info('请选择具体事项')
+            return
+        }
+        if (form.kpiselect === '其他' && !form.kpiselectOther.trim()) {
+            Toast.info('请填写其他事项')
+            return
+        }
     }
 
     isSubmitting.value = true
@@ -391,6 +444,7 @@ const onSubmit = async () => {
             findat: form.findat,
             kpisty: form.kpisty,
             logsty: form.logsty,
+            kpistyitem: form.kpiselect === '其他' ? form.kpiselectOther : form.kpiselect,
             toUsers,
         })
         submitSuccess.value = true
@@ -421,6 +475,12 @@ watch(() => route.query.tab, () => {
 watch(() => form.logsty, () => {
     form.findat = ''
     form.kpisty = null
+})
+
+// 切换正/负向时重置具体下拉与其他文本
+watch(() => form.kpisty, () => {
+    form.kpiselect = ''
+    form.kpiselectOther = ''
 })
 </script>
 

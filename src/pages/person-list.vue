@@ -172,7 +172,7 @@
                     <!-- 日期信息 -->
                     <div class="mt-3 border-t border-slate-100 pt-2.5">
                         <template v-if="item.logsty === '1'">
-                            <div class="grid grid-cols-2 gap-x-4 gap-y-1">
+                            <div class="grid grid-cols-3 gap-x-8 gap-y-1">
                                 <div>
                                     <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">下达日期</p>
                                     <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
@@ -181,12 +181,22 @@
                                     <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">计划完成日期</p>
                                     <p class="mt-0.5 text-xs  text-slate-700">{{ item.findat }}</p>
                                 </div>
+                                <div>
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">创建人</p>
+                                    <p class="mt-0.5 text-xs  text-slate-700">{{ item.creusrnam }}</p>
+                                </div>
                             </div>
                         </template>
                         <template v-else>
-                            <div>
-                                <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">记录时间</p>
-                                <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
+                            <div class="grid grid-cols-2 gap-x-8 gap-y-1">
+                                <div>
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">记录时间</p>
+                                    <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">创建人</p>
+                                    <p class="mt-0.5 text-xs  text-slate-700">{{ item.creusrnam }}</p>
+                                </div>
                             </div>
                         </template>
                     </div>
