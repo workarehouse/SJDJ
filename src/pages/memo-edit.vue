@@ -51,22 +51,37 @@
                     <div class="mx-4 h-px bg-black/[0.06]"></div>
 
                     <!-- 类别 -->
-                    <div class="flex min-h-[52px] items-center gap-3 px-4 py-2.5">
-                        <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">类别<span
-                                class="ml-0.5 text-rose-500">*</span></span>
-                        <div class="ml-auto flex items-center gap-2">
-                            <button type="button"
-                                class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
-                                @click="form.kpisty = 1">
-                                正向事项
-                            </button>
-                            <button type="button"
-                                class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
-                                :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
-                                @click="form.kpisty = -1">
-                                负向事项
-                            </button>
+                    <div class="px-4 py-2.5">
+                        <div class="flex min-h-[52px] items-center gap-3">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">类别<span
+                                    class="ml-0.5 text-rose-500">*</span></span>
+                            <div class="ml-auto flex items-center gap-2">
+                                <button type="button"
+                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                    :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    @click="form.kpisty = 1">
+                                    正向表现
+                                </button>
+                                <button type="button"
+                                    class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
+                                    :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
+                                    @click="form.kpisty = -1">
+                                    负向问题
+                                </button>
+                            </div>
+                        </div>
+                        <!-- 选择后显示具体事项下拉（另起一行） -->
+                        <div v-if="form.kpisty !== null" class="mt-2 px-0">
+                            <select v-model="form.kpiselect"
+                                class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                                <option value="">请选择具体事项</option>
+                                <option v-for="opt in form.kpisty === 1 ? positiveOptions : negativeOptions" :key="opt"
+                                    :value="opt">{{ opt }}</option>
+                                <option value="其他">其他</option>
+                            </select>
+                            <input v-if="form.kpiselect === '其他'" v-model="form.kpiselectOther" type="text"
+                                placeholder="请填写其他事项"
+                                class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                         </div>
                     </div>
                 </div>
@@ -107,6 +122,7 @@ import Toast from '@/utils/Toast'
 import { useContactSelectionStore } from '@/store/contactSelection'
 import { useFormStore } from '@/store/form'
 import defaultAvatar from '@/assets/default-avatar.svg'
+import { POSITIVE_KPI_OPTIONS, NEGATIVE_KPI_OPTIONS, getAllKpiOptions } from '@/enum'
 
 const route = useRoute()
 const router = useRouter()
@@ -129,11 +145,34 @@ if (!formStore.id) {
         eventmsg: initData.eventmsg || '',
         kpisty: initData.kpisty ?? '',
         logsty: initData.logsty ?? '',
+        kpiselect: initData.kpiselect || '',
+        kpiselectOther: initData.kpiselectOther || '',
     })
 }
 const form = formStore
 
+// 初始化后处理 kpistyitem：如果存在则解析为 kpiselect 或 kpiselectOther
+const initializeKpistyItem = () => {
+    if (!initData.kpistyitem) return
+
+    const allOptions = getAllKpiOptions()
+    if (allOptions.includes(initData.kpistyitem)) {
+        // 在预定列表中，直接赋值
+        form.kpiselect = initData.kpistyitem
+        form.kpiselectOther = ''
+        return
+    }
+
+    // 不在列表中，设为“其他”
+    form.kpiselect = '其他'
+    form.kpiselectOther = initData.kpistyitem
+}
+
 const contactSelectionStore = useContactSelectionStore()
+
+// 使用从 enum 导入的正向/负向事项
+const positiveOptions = POSITIVE_KPI_OPTIONS
+const negativeOptions = NEGATIVE_KPI_OPTIONS
 
 // 人员选择数据改为 revusr 字段
 const selectedContactsData = ref(Array.isArray(initData.revusr) ? initData.revusr : [])
@@ -174,6 +213,8 @@ onMounted(async () => {
     } else {
         selectedContactsData.value = contacts
     }
+    // 初始化 kpiselect 和 kpiselectOther
+    initializeKpistyItem()
 })
 
 const onSubmit = async () => {
@@ -190,6 +231,17 @@ const onSubmit = async () => {
         Toast.fail('请选择类别')
         return
     }
+    // 实际每帮孩选择类别后须选择具体事项或填写其他
+    if (form.kpisty !== null && form.kpisty !== '') {
+        if (!form.kpiselect) {
+            Toast.fail('请选择具体事项')
+            return
+        }
+        if (form.kpiselect === '其他' && !form.kpiselectOther.trim()) {
+            Toast.fail('请填写其他事项')
+            return
+        }
+    }
     isSubmitting.value = true
     try {
 
@@ -200,6 +252,7 @@ const onSubmit = async () => {
             eventmsg: form.eventmsg,
             kpisty: form.kpisty,
             logsty: form.logsty,
+            kpistyitem: form.kpiselect === '其他' ? form.kpiselectOther : form.kpiselect,
             toUsers: selectedContactsData.value.map(c => c.acct).filter(Boolean).join(','),
         })
         submitSuccess.value = true
@@ -214,6 +267,14 @@ const onSubmit = async () => {
 
 // 仅返回到 person-list 时清空 contactSelectionStore
 import { onBeforeRouteLeave } from 'vue-router'
+import { watch } from 'vue'
+
+// 切换正/负向时重置具体下拉与其他文本
+watch(() => form.kpisty, () => {
+    form.kpiselect = ''
+    form.kpiselectOther = ''
+})
+
 onBeforeRouteLeave((to, from, next) => {
     // 判断目标路由是否为 person-list
     if (to.name === 'person-list' || to.path === '/person-list') {

@@ -150,10 +150,6 @@
                             </svg>
                             <span>发起</span>
                         </button>
-                        <!-- kpi：仅备忘录显示 -->
-                        <span v-if="item.logsty === '2' && item.kpistytxt" class="ml-auto text-[11px] text-slate-400">
-                            {{ item.kpistytxt }}
-                        </span>
                     </div>
                     <!-- 内容 -->
                     <p class="text-sm leading-relaxed text-slate-800 mb-0 inline">
@@ -188,14 +184,24 @@
                             </div>
                         </template>
                         <template v-else>
-                            <div class="grid grid-cols-2 gap-x-8 gap-y-1">
-                                <div>
-                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">记录时间</p>
-                                    <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
+                            <div class="space-y-2">
+                                <!-- kpistyitem：在记录时间上面一行 -->
+                                <div v-if="item.kpistyitem" class="pb-1">
+                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">{{
+                                        item.kpistytxt }}</p>
+                                    <p class="mt-0.5 text-xs text-slate-700">{{ item.kpistyitem }}</p>
                                 </div>
-                                <div>
-                                    <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">创建人</p>
-                                    <p class="mt-0.5 text-xs  text-slate-700">{{ item.creusrnam }}</p>
+                                <div class="grid grid-cols-2 gap-x-8 gap-y-1">
+                                    <div>
+                                        <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">记录时间
+                                        </p>
+                                        <p class="mt-0.5 text-xs  text-slate-700">{{ formatDateTime(item.credat) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">创建人
+                                        </p>
+                                        <p class="mt-0.5 text-xs  text-slate-700">{{ item.creusrnam }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </template>

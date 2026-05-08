@@ -152,13 +152,13 @@
                                         class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                         :class="form.kpisty === 1 ? 'border-transparent bg-[#26BF4C] text-white shadow-[0_1px_4px_rgba(38,191,76,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                         @click="form.kpisty = 1">
-                                        正向事项
+                                        正向表现
                                     </button>
                                     <button type="button"
                                         class="rounded-full border px-3 py-1 text-xs font-medium transition-all"
                                         :class="form.kpisty === -1 ? 'border-transparent bg-[#FF4650] text-white shadow-[0_1px_4px_rgba(255,70,80,0.4)]' : 'border-[#C7C7CC]/50 bg-white/60 text-[#8E8E93]'"
                                         @click="form.kpisty = -1">
-                                        负向事项
+                                        负向问题
                                     </button>
                                 </div>
                             </div>
@@ -260,6 +260,7 @@ import { useRoute, useRouter } from 'vue-router'
 import http from '@/utils/http'
 import Toast from '@/utils/Toast'
 import defaultAvatar from '@/assets/default-avatar.svg'
+import { POSITIVE_KPI_OPTIONS, NEGATIVE_KPI_OPTIONS } from '@/enum'
 
 const route = useRoute()
 const router = useRouter()
@@ -316,28 +317,9 @@ const form = reactive({
     kpiselectOther: '', // 选择其他时的文本
 })
 
-// 正向 / 负向事项列表
-const positiveOptions = [
-    '主动推进工作，无需上级督促盯办',
-    '主动担当补位，发现问题自主闭环整改',
-    '可独立搭建完整工作框架、落地方案',
-    '统筹分工有序，跨岗位协同衔接顺畅，无协作内耗',
-    '严守制度流程，全流程合规作业，无越线违规行为',
-    '具备建立、优化工作流程、标准能力',
-    '承接指令不打折扣，按期保质完成闭环交付',
-    '过程主动同步进度，攻坚急事主动兜底担当',
-]
-
-const negativeOptions = [
-    '工作被动等待，不催不动，缺乏自主担当',
-    '遇事推诿甩锅，不主动整改工作问题',
-    '缺乏全局思路，方案逻辑杂乱，无法落地使用',
-    '统筹排布无序，工作节奏混乱，易返工、易扯皮',
-    '无视标准流程，随意简化环节，凭个人经验办事',
-    '不具备或抵触建立、优化工作流程、标准化工作',
-    '选择性落实工作，拖延应付，常态化交付滞后',
-    '履职敷衍无闭环，成果质量差，频繁返工整改',
-]
+// 使用从 enum 导入的正向/负向事项
+const positiveOptions = POSITIVE_KPI_OPTIONS
+const negativeOptions = NEGATIVE_KPI_OPTIONS
 
 const selectedContactsData = ref([])
 const contactSelectionStore = useContactSelectionStore()
