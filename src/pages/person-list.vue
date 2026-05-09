@@ -226,6 +226,18 @@
         <van-calendar v-model:show="showDatePicker" type="range" :show-confirm="false" color="#267EF0"
             :min-date="new Date(2000, 0, 1)" :max-date="new Date()" @confirm="onDateConfirm"
             @cancel="showDatePicker = false" />
+
+        <!-- 查看流程时的页面级加载遮罩 -->
+        <div v-if="isOpeningBpm"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-black/15 backdrop-blur-[1px]">
+            <div class="flex flex-col items-center gap-3 rounded-xl bg-white px-5 py-4 shadow-lg">
+                <svg class="h-6 w-6 animate-spin text-[#267EF0]" viewBox="0 0 24 24" fill="none">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
+                    <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                </svg>
+                <p class="text-xs font-medium text-slate-600">流程加载中...</p>
+            </div>
+        </div>
     </section>
 </template>
 
@@ -282,6 +294,7 @@ const personRecords = ref([])
 const keyword = ref('')
 let searchTimer = null
 const openingBpmId = ref('')
+const isOpeningBpm = computed(() => Boolean(openingBpmId.value))
 
 const fetchRecords = async () => {
     const [bdat, edat] = selectedDateRange.value.length === 2
@@ -376,14 +389,17 @@ const clearDateFilter = () => {
 }
 
 const onGoBPM = async (item) => {
+    if (!item?.id || openingBpmId.value) return
+    openingBpmId.value = item.id
+
     try {
         const result = await http.post('/qw/getsuptskprocurl', { id: item.id })
 
-        if (!result) {
+        if (!result.result) {
             Toast.info('未获取到跳转地址')
             return
         }
-        window.location.href = result
+        window.location.href = result.result
     } catch (error) {
         Toast.error('获取跳转地址失败，请稍后重试')
     } finally {
