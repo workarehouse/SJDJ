@@ -117,7 +117,7 @@
                                 <span class="text-sm font-medium text-slate-700">内容<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
-                            <textarea v-model="form.eventmsg" rows="4" placeholder="请填写事件详情…"
+                            <textarea v-model="form.eventmsg" rows="4" placeholder="请填写详情…"
                                 class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-all focus-visible:ring-2 focus-visible:ring-[#267EF0]/20 focus-visible:border-[#267EF0] focus-visible:bg-white focus-visible:outline-none"></textarea>
                         </label>
                     </div>
@@ -177,7 +177,7 @@
                                     </svg>
                                 </div>
                                 <input v-if="form.kpiselect === '其他'" v-model="form.kpiselectOther" type="text"
-                                    placeholder="请填写其他事项"
+                                    placeholder="请填写"
                                     class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
                             </div>
                         </div>
@@ -425,7 +425,7 @@ const onSubmit = async () => {
             return
         }
         if (form.kpiselect === '其他' && !form.kpiselectOther.trim()) {
-            Toast.info('请填写其他事项')
+            Toast.info('请填写其他')
             return
         }
     }
