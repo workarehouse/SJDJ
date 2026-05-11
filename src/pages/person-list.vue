@@ -235,14 +235,14 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
                     <path class="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
                 </svg>
-                <p class="text-xs font-medium text-slate-600">流程加载中...</p>
+                <p class="text-xs font-medium text-slate-600">跳转流程中...</p>
             </div>
         </div>
     </section>
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, onBeforeUnmount, ref } from 'vue'
 import dayjs from 'dayjs'
 import { useRoute } from 'vue-router'
 import http from '@/utils/http'
@@ -399,10 +399,11 @@ const onGoBPM = async (item) => {
             Toast.info('未获取到跳转地址')
             return
         }
+        // 尝试跳转到流程页面。不要立即清除 loading，等待页面卸载或采用回退超时。
         window.location.href = result.result
     } catch (error) {
         Toast.error('获取跳转地址失败，请稍后重试')
-    } finally {
+        // 出错时清除遮罩以允许用户继续操作
         openingBpmId.value = ''
     }
 }
@@ -432,8 +433,28 @@ const onCreteBPM = (item) => {
         })
 }
 
+// 页面挂载时注册必要的事件；卸载时清理监听器
+const clearOpeningBpm = () => {
+    openingBpmId.value = ''
+}
+
+const onVisibilityChange = () => {
+    if (document.visibilityState === 'hidden') {
+        clearOpeningBpm()
+    }
+}
+
 onMounted(() => {
     fetchRecords()
+    window.addEventListener('beforeunload', clearOpeningBpm)
+    window.addEventListener('pagehide', clearOpeningBpm)
+    document.addEventListener('visibilitychange', onVisibilityChange)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('beforeunload', clearOpeningBpm)
+    window.removeEventListener('pagehide', clearOpeningBpm)
+    document.removeEventListener('visibilitychange', onVisibilityChange)
 })
 </script>
 
