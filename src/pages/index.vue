@@ -4,14 +4,14 @@
         <div class="sticky top-0 z-30 bg-gradient-to-b from-white to-[#F5F6F7] backdrop-blur-xl">
             <div class="mx-auto w-full max-w-md">
                 <!-- Tab Switcher -->
-                <div class="px-3 pt-5 py-3 ">
+                <div class="px-3 pt-5 py-3">
                     <div
-                        class="relative grid grid-cols-2 rounded-xl bg-[#EBEBEB] p-1 text-center text-sm font-semibold">
+                        class="relative grid grid-cols-2 rounded-xl bg-[#EBEBEB] p-1 text-center text-sm font-semibold shadow-[inset_0_1px_1px_rgba(255,255,255,0.8),inset_0_-1px_2px_rgba(0,0,0,0.05)]">
                         <span
-                            class="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-0.25rem)] rounded-lg bg-white shadow-[0_2px_10px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.06)]"
+                            class="pointer-events-none absolute bottom-1 left-1 top-1 w-[calc(50%-0.25rem)] rounded-lg bg-white shadow-card-elevated ring-1 ring-white/80"
                             :class="[
                                 activeTab === 'query' ? 'translate-x-full' : 'translate-x-0',
-                                isRestoringTab ? 'transition-none' : 'transition-transform duration-250 ease-out',
+                                isRestoringTab ? 'transition-none' : 'transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]',
                             ]"></span>
                         <button class="relative z-10 rounded-lg py-2 transition-colors duration-200"
                             :class="activeTab === 'record' ? 'text-[#267EF0]' : 'text-slate-500 hover:text-slate-700'"
@@ -36,15 +36,14 @@
                 :leave-to-class="tabDirection === 'right' ? '-translate-x-6 opacity-0' : 'translate-x-6 opacity-0'">
 
                 <!-- Record Form -->
-                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-2 mx-3  "
+                <form id="record-form" v-if="activeTab === 'record'" key="record" class="space-y-3 mx-3  "
                     @submit.prevent="onSubmit">
 
                     <!-- Card 1: 人员 + 分类 -->
-                    <div
-                        class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
+                    <div class="overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-black/[0.04]">
                         <!-- 人员 -->
                         <RouterLink to="/contacts"
-                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
+                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-all active:bg-black/[0.06] active:scale-[0.98]">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">人员<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1.5">
@@ -119,23 +118,22 @@
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
                             <textarea v-model="form.eventmsg" rows="4" placeholder="请填写事件详情…"
-                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-colors focus-visible:border-[#267EF0]/40 focus-visible:bg-white focus-visible:outline-none"></textarea>
+                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-all focus-visible:ring-2 focus-visible:ring-[#267EF0]/20 focus-visible:border-[#267EF0] focus-visible:bg-white focus-visible:outline-none"></textarea>
                         </label>
                     </div>
 
                     <!-- Card 2: 要求完成时间（督办）/ 类别（备忘录） -->
-                    <div
-                        class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]">
+                    <div class="overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-black/[0.04]">
                         <!-- 要求完成时间：仅督办显示 -->
                         <button v-if="form.logsty === '1'" type="button" @click="showCalendar = true"
-                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-colors active:bg-black/[0.06]">
+                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-all active:bg-black/[0.06] active:scale-[0.98]">
                             <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">要求完成时间<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
                                 <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
                                     {{ form.findat || '请选择' }}
                                 </span>
-                                <svg class="h-3.5 w-3.5 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
+                                <svg class="h-3.5 w-3.5 shrink-0 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
                                     <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
@@ -164,13 +162,20 @@
                             </div>
                             <!-- 选择后显示具体事项下拉（另起一行） -->
                             <div v-if="form.kpisty !== null" class="mt-2 px-0">
-                                <select v-model="form.kpiselect"
-                                    class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
-                                    <option value="">请选择具体事项</option>
-                                    <option v-for="opt in form.kpisty === 1 ? positiveOptions : negativeOptions"
-                                        :key="opt" :value="opt">{{ opt }}</option>
-                                    <option value="其他">其他</option>
-                                </select>
+                                <div class="relative">
+                                    <select v-model="form.kpiselect"
+                                        class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2 pr-8 text-sm text-slate-700 transition-colors focus:border-[#267EF0] focus:outline-none focus:ring-2 focus:ring-[#267EF0]/20">
+                                        <option value="">请选择具体事项</option>
+                                        <option v-for="opt in form.kpisty === 1 ? positiveOptions : negativeOptions"
+                                            :key="opt" :value="opt">{{ opt }}</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                    <svg class="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[#C7C7CC]"
+                                        viewBox="0 0 20 20" fill="none">
+                                        <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
+                                            stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
+                                </div>
                                 <input v-if="form.kpiselect === '其他'" v-model="form.kpiselectOther" type="text"
                                     placeholder="请填写其他事项"
                                     class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
@@ -187,7 +192,7 @@
                     <!-- 搜索占位栏 -->
                     <div class="px-3 pt-4">
                         <button type="button" @click="router.push('/search')"
-                            class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-50 bg-white px-3 py-1.5 text-slate-500 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors active:bg-slate-50">
+                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-slate-50 bg-white px-3 py-1.5 text-slate-500 shadow-card transition-all active:bg-slate-50 active:scale-[0.98]">
                             <svg class="h-4 w-4 text-slate-400" viewBox="0 0 20 20" fill="none">
                                 <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5" />
                                 <path d="M14 14L17.5 17.5" stroke="currentColor" stroke-width="1.5"
@@ -198,13 +203,12 @@
                     </div>
 
                     <div class="mt-4 px-4">
-                        <p class="mb-2 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">最近人员</p>
-                        <div
-                            class="overflow-hidden rounded-2xl bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)] divide-y divide-black/[0.05]">
+                        <p class="mb-3 px-1 text-xs font-semibold uppercase tracking-wide text-[#8E8E93]">最近人员</p>
+                        <div class="overflow-hidden rounded-2xl bg-white shadow-card divide-y divide-black/[0.05]">
                             <button v-for="person in QueryPeople" :key="person.acct" @click="goToPersonList(person)"
-                                class="flex w-full items-center gap-3 px-4 py-3 text-left transition-colors active:bg-black/[0.06]">
+                                class="flex w-full items-center gap-3 px-4 py-3 text-left transition-all active:bg-black/[0.06] active:scale-[0.98]">
                                 <div
-                                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-sm font-semibold text-white shadow-sm overflow-hidden">
+                                    class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#267EF0] to-[#1a6ad4] text-sm font-semibold text-white shadow-sm overflow-hidden ring-1 ring-white/70">
                                     <img :src="person.avatar || defaultAvatar" :alt="person.usrnam"
                                         class="h-full w-full object-cover" />
                                 </div>
@@ -212,11 +216,18 @@
                                     <p class="truncate text-sm font-medium text-slate-900">{{ person.usrnam }}</p>
                                     <p class="truncate text-xs text-slate-500">{{ person.postnam }}</p>
                                 </div>
-                                <svg class="h-4 w-4 flex-shrink-0 text-[#C7C7CC]" viewBox="0 0 20 20" fill="none">
+                                <svg class="h-4 w-4 flex-shrink-0 text-[#B8BDC6]" viewBox="0 0 20 20" fill="none">
                                     <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.75"
                                         stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </button>
+                            <div v-if="!QueryPeople.length" class="px-4 py-6 text-center">
+                                <p class="text-sm text-slate-500">暂无最近人员记录</p>
+                                <button type="button" @click="router.push('/search')"
+                                    class="mt-3 inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-4 py-1.5 text-xs font-medium text-slate-700 shadow-sm transition-all active:scale-[0.98] active:bg-slate-50">
+                                    去搜索人员
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -227,7 +238,8 @@
         <div v-if="activeTab === 'record'" class="fixed inset-x-0 bottom-0 bg-[#F5F6F7]/90 backdrop-blur-xl">
             <div class="mx-auto w-full max-w-md px-4 pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
                 <button type="submit" form="record-form" :disabled="isSubmitting || submitSuccess"
-                    class="h-12 w-full rounded-[14px] bg-[#267EF0] text-[15px] font-semibold tracking-wide text-white shadow-[0_4px_16px_rgba(38,126,240,0.38)] transition-all active:scale-[0.98] active:bg-[#1a6ad4] disabled:opacity-60 disabled:active:scale-100">
+                    class="h-12 w-full rounded-[14px] text-[15px] font-semibold tracking-wide text-white shadow-button-primary transition-all duration-200 ease-[cubic-bezier(0.34,1.56,0.64,1)] active:scale-[0.97] active:bg-[#1a6ad4] disabled:opacity-60 disabled:active:scale-100"
+                    :class="submitSuccess ? 'bg-[#26BF4C] scale-[1.02]' : 'bg-[#267EF0]'">
                     <span v-if="isSubmitting" class="flex items-center justify-center gap-2">
                         <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />

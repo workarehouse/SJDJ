@@ -14,6 +14,11 @@ export default {
             colors: {
                 primary: colors.indigo
             },
+            boxShadow: {
+                'card': '0 1px 3px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04)',
+                'card-elevated': '0 2px 10px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.06)',
+                'button-primary': '0 4px 16px rgba(38,126,240,0.38)',
+            },
             keyframes: {
                 'accordion-down': {
                     from: { height: 0 },
