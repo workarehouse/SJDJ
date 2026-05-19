@@ -43,8 +43,10 @@
                     <div class="overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-black/[0.04]">
                         <!-- 人员 -->
                         <RouterLink to="/contacts"
-                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-all active:bg-black/[0.06] active:scale-[0.98]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">人员<span
+                            class="flex min-h-[52px] items-center gap-3 px-4 py-2.5 transition-all active:bg-black/[0.06] active:scale-[0.98]"
+                            :class="formErrors.contacts ? 'bg-rose-50/60' : ''">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium"
+                                :class="formErrors.contacts ? 'text-rose-600' : 'text-slate-700'">人员<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1.5">
                                 <!-- 未选择 -->
@@ -74,6 +76,8 @@
                                     </svg>
                                 </span>
                         </RouterLink>
+                        <p v-if="formErrors.contacts" class="px-4 pb-2 text-xs text-rose-500">{{ formErrors.contacts }}
+                        </p>
 
                         <div class="mx-4 h-px bg-black/[0.06]"></div>
 
@@ -114,11 +118,15 @@
                         <!-- 内容 -->
                         <label class="block px-4 pb-3 pt-3">
                             <div class="mb-2">
-                                <span class="text-sm font-medium text-slate-700">内容<span
+                                <span class="text-sm font-medium"
+                                    :class="formErrors.eventmsg ? 'text-rose-600' : 'text-slate-700'">内容<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                             </div>
                             <textarea v-model="form.eventmsg" rows="4" placeholder="请填写详情…"
-                                class="w-full resize-none rounded-xl border border-transparent bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-all focus-visible:ring-2 focus-visible:ring-[#267EF0]/20 focus-visible:border-[#267EF0] focus-visible:bg-white focus-visible:outline-none"></textarea>
+                                class="w-full resize-none rounded-xl border bg-slate-50/80 px-3 py-2.5 text-sm leading-6 text-slate-800 placeholder:text-[#C7C7CC] transition-all focus-visible:ring-2 focus-visible:bg-white focus-visible:outline-none"
+                                :class="formErrors.eventmsg ? 'border-rose-300 focus-visible:border-rose-500 focus-visible:ring-rose-200' : 'border-transparent focus-visible:border-[#267EF0] focus-visible:ring-[#267EF0]/20'"></textarea>
+                            <p v-if="formErrors.eventmsg" class="mt-2 text-xs text-rose-500">{{ formErrors.eventmsg }}
+                            </p>
                         </label>
                     </div>
 
@@ -126,8 +134,10 @@
                     <div class="overflow-hidden rounded-2xl bg-white shadow-card ring-1 ring-black/[0.04]">
                         <!-- 要求完成时间：仅督办显示 -->
                         <button v-if="form.logsty === '1'" type="button" @click="showCalendar = true"
-                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-all active:bg-black/[0.06] active:scale-[0.98]">
-                            <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">要求完成时间<span
+                            class="flex w-full min-h-[52px] items-center gap-3 px-4 py-2.5 transition-all active:bg-black/[0.06] active:scale-[0.98]"
+                            :class="formErrors.findat ? 'bg-rose-50/60' : ''">
+                            <span class="shrink-0 whitespace-nowrap text-sm font-medium"
+                                :class="formErrors.findat ? 'text-rose-600' : 'text-slate-700'">要求完成时间<span
                                     class="ml-0.5 text-rose-500">*</span></span>
                             <span class="ml-auto flex items-center gap-1 text-sm">
                                 <span :class="form.findat ? 'text-slate-800' : 'text-slate-400'">
@@ -139,11 +149,13 @@
                                 </svg>
                             </span>
                         </button>
+                        <p v-if="formErrors.findat" class="px-4 pb-2 text-xs text-rose-500">{{ formErrors.findat }}</p>
 
                         <!-- 类别：仅备忘录显示 -->
                         <div v-if="form.logsty === '2'" class="px-4 py-2.5">
                             <div class="flex min-h-[52px] items-center gap-3">
-                                <span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-700">类别<span
+                                <span class="shrink-0 whitespace-nowrap text-sm font-medium"
+                                    :class="formErrors.kpisty ? 'text-rose-600' : 'text-slate-700'">类别<span
                                         class="ml-0.5 text-rose-500">*</span></span>
                                 <div class="ml-auto flex items-center gap-2">
                                     <button type="button"
@@ -160,11 +172,13 @@
                                     </button>
                                 </div>
                             </div>
+                            <p v-if="formErrors.kpisty" class="mt-2 text-xs text-rose-500">{{ formErrors.kpisty }}</p>
                             <!-- 选择后显示具体事项下拉（另起一行） -->
                             <div v-if="form.kpisty !== null" class="mt-2 px-0">
                                 <div class="relative">
                                     <select v-model="form.kpiselect"
-                                        class="w-full appearance-none rounded-xl border border-slate-200 bg-white px-3 py-2 pr-8 text-sm text-slate-700 transition-colors focus:border-[#267EF0] focus:outline-none focus:ring-2 focus:ring-[#267EF0]/20">
+                                        class="w-full appearance-none rounded-xl border bg-white px-3 py-2 pr-8 text-sm text-slate-700 transition-colors focus:outline-none focus:ring-2"
+                                        :class="formErrors.kpiselect ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-200' : 'border-slate-200 focus:border-[#267EF0] focus:ring-[#267EF0]/20'">
                                         <option value="">请选择具体事项</option>
                                         <option v-for="opt in form.kpisty === 1 ? positiveOptions : negativeOptions"
                                             :key="opt" :value="opt">{{ opt }}</option>
@@ -178,7 +192,12 @@
                                 </div>
                                 <input v-if="form.kpiselect === '其他'" v-model="form.kpiselectOther" type="text"
                                     placeholder="请填写"
-                                    class="mt-2 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+                                    class="mt-2 w-full rounded-xl border px-3 py-2 text-sm outline-none"
+                                    :class="formErrors.kpiselectOther ? 'border-rose-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-200' : 'border-slate-200 focus:border-[#267EF0] focus:ring-2 focus:ring-[#267EF0]/20'" />
+                                <p v-if="formErrors.kpiselect" class="mt-2 text-xs text-rose-500">{{
+                                    formErrors.kpiselect }}</p>
+                                <p v-else-if="formErrors.kpiselectOther" class="mt-2 text-xs text-rose-500">{{
+                                    formErrors.kpiselectOther }}</p>
                             </div>
                         </div>
                     </div>
@@ -329,6 +348,15 @@ const form = reactive({
     kpiselectOther: '', // 选择其他时的文本
 })
 
+const formErrors = reactive({
+    contacts: '',
+    eventmsg: '',
+    findat: '',
+    kpisty: '',
+    kpiselect: '',
+    kpiselectOther: '',
+})
+
 // 使用从 enum 导入的正向/负向事项
 const positiveOptions = POSITIVE_KPI_OPTIONS
 const negativeOptions = NEGATIVE_KPI_OPTIONS
@@ -391,6 +419,49 @@ const resetForm = () => {
     form.kpiselectOther = ''
     selectedContactsData.value = []
     contactSelectionStore.clearSelectedContacts()
+    clearFormErrors()
+}
+
+const clearFormErrors = () => {
+    formErrors.contacts = ''
+    formErrors.eventmsg = ''
+    formErrors.findat = ''
+    formErrors.kpisty = ''
+    formErrors.kpiselect = ''
+    formErrors.kpiselectOther = ''
+}
+
+const validateForm = () => {
+    clearFormErrors()
+
+    if (!selectedContactsData.value.length) {
+        formErrors.contacts = '请选择人员'
+        return false
+    }
+    if (!form.eventmsg.trim()) {
+        formErrors.eventmsg = '请填写内容'
+        return false
+    }
+    if (form.logsty === '1' && !form.findat) {
+        formErrors.findat = '请选择要求完成时间'
+        return false
+    }
+    if (form.logsty === '2' && form.kpisty === null) {
+        formErrors.kpisty = '请选择类别'
+        return false
+    }
+    if (form.logsty === '2' && form.kpisty !== null) {
+        if (!form.kpiselect) {
+            formErrors.kpiselect = '请选择具体事项'
+            return false
+        }
+        if (form.kpiselect === '其他' && !form.kpiselectOther.trim()) {
+            formErrors.kpiselectOther = '请填写其他'
+            return false
+        }
+    }
+
+    return true
 }
 
 const isSubmitting = ref(false)
@@ -399,35 +470,8 @@ const submitSuccess = ref(false)
 const onSubmit = async () => {
     if (isSubmitting.value || submitSuccess.value) return
 
-    // 基础必填校验
-    if (!selectedContactsData.value.length) {
-        Toast.info('请选择人员')
+    if (!validateForm()) {
         return
-    }
-    if (!form.eventmsg.trim()) {
-        Toast.info('请填写内容')
-        return
-    }
-    // 督办：要求完成时间必填
-    if (form.logsty === '1' && !form.findat) {
-        Toast.info('请选择要求完成时间')
-        return
-    }
-    // 备忘录：类别必填（kpisty 默认为 1，但若未主动选择则为 null）
-    if (form.logsty === '2' && form.kpisty === null) {
-        Toast.info('请选择类别')
-        return
-    }
-    // 备忘录：已选择类别后须选择具体事项或填写其他
-    if (form.logsty === '2' && form.kpisty !== null) {
-        if (!form.kpiselect) {
-            Toast.info('请选择具体事项')
-            return
-        }
-        if (form.kpiselect === '其他' && !form.kpiselectOther.trim()) {
-            Toast.info('请填写其他')
-            return
-        }
     }
 
     isSubmitting.value = true
@@ -469,12 +513,41 @@ watch(() => route.query.tab, () => {
 watch(() => form.logsty, () => {
     form.findat = ''
     form.kpisty = null
+    form.kpiselect = ''
+    form.kpiselectOther = ''
+    formErrors.findat = ''
+    formErrors.kpisty = ''
+    formErrors.kpiselect = ''
+    formErrors.kpiselectOther = ''
 })
 
 // 切换正/负向时重置具体下拉与其他文本
 watch(() => form.kpisty, () => {
     form.kpiselect = ''
     form.kpiselectOther = ''
+    formErrors.kpiselect = ''
+    formErrors.kpiselectOther = ''
+})
+
+watch(() => selectedContactsData.value.length, () => {
+    formErrors.contacts = ''
+})
+
+watch(() => form.eventmsg, () => {
+    formErrors.eventmsg = ''
+})
+
+watch(() => form.findat, () => {
+    formErrors.findat = ''
+})
+
+watch(() => form.kpiselect, () => {
+    formErrors.kpiselect = ''
+    formErrors.kpiselectOther = ''
+})
+
+watch(() => form.kpiselectOther, () => {
+    formErrors.kpiselectOther = ''
 })
 </script>
 
